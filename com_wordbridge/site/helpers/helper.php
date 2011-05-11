@@ -20,14 +20,12 @@ class WordbridgeHelper {
     {
         $info = array( 'count' => 0,
                        'description' => '',
+                       'last_post_id' => 0,
                        'id' => '' );
 
         $params = &JComponentHelper::getParams( 'com_wordbridge' );
         $blogname = $params->get( 'wordbridge_blog_name' );
-        $bloguser = $params->get( 'wordbridge_blog_user' );
-        $blogpass = $params->get( 'wordbridge_blog_pass' );
-        if ( empty( $blogname ) || empty( $bloguser ) ||
-             empty( $blogpass) || ! function_exists( 'curl_init' ) )
+        if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
         {
             return $info;
         }
@@ -38,8 +36,6 @@ class WordbridgeHelper {
         curl_setopt( $curl, CURLOPT_HEADER, false );
         curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, true );
         curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
-        curl_setopt( $curl, CURLOPT_USERPWD, sprintf( '%s:%s', $bloguser, $blogpass ) );
 
         $xml = curl_exec( $curl );
         curl_close( $curl );
@@ -53,6 +49,60 @@ class WordbridgeHelper {
         $info['count'] = $doc->getElementsByTagName( 'statuses_count' )->item( 0 )->textContent;
         $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
         $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
+
+        // Get the last post information, removing the blog ID that
+        // comes out when using the twitter API
+        $info['last_post_id'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'id' )->item( 0 )->textContent;
+        $info['last_post_id'] = substr( $info['last_post_id'], strlen( $info['id'] ) );
+
+        // Update the stored blog basic details if need be
+        if ( !empty( $info['description'] ) )
+        {
+            $stored_blog = WordbridgeHelper::getBlogByID( $info['id'] );
+            if ( $stored_blog )
+            {
+                if ( $stored_blog['description'] != $info['description'] )
+                {
+                    WordbridgeHelper::storeBlog( $info['id'], $info['description'] );
+                }
+            }
+            else
+            {
+                // Store the blog data locally
+                WordbridgeHelper::storeBlog( $info['id'], $info['description'] );
+            }
+        }
         return $info;
+    }
+
+
+    /**
+     * getBlogByID
+     * Look up the locally stored blog details
+     * @return array containing id and description if found, or null if not
+     */
+    function getBlogByID( $id )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'SELECT blog_id, description FROM #__com_wordbridge_blogs WHERE blog_id = %d', (int)$id );
+        $db->setQuery( $query );
+        $blog = $db->loadRow();
+        if ( $blog == null )
+        {
+            return null;
+        }
+        return array( 'id' => $blog[0], 'description' => $blog[1] );
+    }
+
+
+    /**
+     * storeBlog
+     * Store the ID and description of a blog
+     */
+    function storeBlog( $id, $description )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s)', (int)$id, $db->Quote( $description, true ) );
+        $db->Execute( $query );
     }
 }

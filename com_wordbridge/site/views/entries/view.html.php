@@ -39,7 +39,7 @@ class WordbridgeViewEntries extends JView
         $this->assignRef( 'totalEntries', $blogInfo['count'] );
 
         // Work out the maximum page to show
-        $max_page = ceil( $totalEntries / $params->get( 'wordbridge_blog_entry_feed_count' ) );
+        $max_page = ceil( $blogInfo['count'] / $params->get( 'wordbridge_blog_entry_feed_count', 10 ) );
         if ( $page > $max_page )
         {
             $page = $max_page;
@@ -60,10 +60,10 @@ class WordbridgeViewEntries extends JView
 
         // Load the model for the desired page
         $model = &$this->getModel();
-        $model->loadEntries( $page );
+        $model->loadEntries( $page, $blogInfo );
         $entries = $model->getEntries();
         $this->assignRef( 'entries',   $entries );
-        $title = $model->getTitle();
+        $title = $blogInfo['description'];
         $this->assignRef( 'title',   $title );
 
         parent::display($tpl);
