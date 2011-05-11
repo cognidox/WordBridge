@@ -56,9 +56,6 @@ class WordbridgeModelCategory extends JModel
             return null;
         }
 
-        $params = &JComponentHelper::getParams( 'com_wordbridge' );
-        $show_links = $params->get( 'wordbridge_show_links' ) == 'yes' ? true : false;
-
         $results = array();
         $doc = new DOMDocument();
         $doc->loadXML( $xml );
@@ -93,12 +90,6 @@ class WordbridgeModelCategory extends JModel
             {
                 $link_parts = explode( '/', $feed_link );
                 $slug = $link_parts[ count( $link_parts ) - 2 ];
-            }
-
-            // Trim the links if need be
-            if ( !$show_links )
-            {
-                $content = substr( $content, 0, strrpos( $content, '<br />' ) );
             }
 
             // Add the new entry to our blog entry list
