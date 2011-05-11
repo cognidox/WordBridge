@@ -137,4 +137,33 @@ class WordbridgeHelper {
         $name = preg_replace( '/^-|_$/', '', $name );
         return $name;
     }
+
+    function storeBlogEntries( $entries, $blog_id )
+    {
+        $db =& JFactory::getDBO();
+        foreach ( $entries as $entry )
+        {
+            // Update the locally cached post
+            $post_query = sprintf( 
+                'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %d, %s, %s, %s, %s)', 
+                $entry['postid'],
+                $blog_id,
+                $db->Quote( $entry['title'], true ),
+                $db->Quote( $entry['content'], true ),
+                $db->Quote( strftime( '%F %T %Z', $entry['date'] ), true),
+                $db->Quote( $entry['slug'], true ) );
+            $db->Execute( $post_query );
+
+            // Update the post category settings
+            $db->Execute( sprintf( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_id = %d', $entry['postid'], $blog_id ) );
+            if ( count( $entry['categories'] ) )
+            {
+                foreach ( $entry['categories'] as $category )
+                {
+                    $db->Execute( 
+                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blog_id, $db->Quote( $category, true ) ) );
+                }
+            }
+        }
+    }
 }

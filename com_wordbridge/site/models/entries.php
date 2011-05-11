@@ -11,6 +11,7 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 jimport( 'joomla.application.component.model' );
+require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 
 class WordbridgeModelEntries extends JModel
 {
@@ -93,35 +94,15 @@ class WordbridgeModelEntries extends JModel
         if ( $cache_id )
         {
             $post_order = 1;
+
+            WordbridgeHelper::storeBlogEntries( $this->_entries, $blogInfo['id'] );
             foreach ( $this->_entries as $entry )
             {
-                // Update the locally cached post
-                $post_query = sprintf( 
-                    'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %d, %s, %s, %s, %s)', 
-                    $entry['postid'],
-                    $blogInfo['id'],
-                    $db->Quote( $entry['title'], true ),
-                    $db->Quote( $entry['content'], true ),
-                    $db->Quote( strftime( '%F %T %Z', $entry['date'] ), true),
-                    $db->Quote( $entry['slug'], true ) );
-                $db->Execute( $post_query );
-
                 // Update the locally cached page mapping
                 $page_query = sprintf(
                     'INSERT INTO #__com_wordbridge_pages VALUES (%d, %d, %d)',
                     $cache_id, $post_order++, $entry['postid'] );
                 $db->Execute( $page_query );
-
-                // Update the post category settings
-                $db->Execute( sprintf( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_id = %d', $entry['postid'], $blogInfo['id'] ) );
-                if ( count( $entry['categories'] ) )
-                {
-                    foreach ( $entry['categories'] as $category )
-                    {
-                        $db->Execute( 
-                            sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blogInfo['id'], $db->Quote( $category, true ) ) );
-                    }
-                }
             }
         }
     }
