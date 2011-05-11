@@ -8,6 +8,7 @@
  */
 
 defined('_JEXEC') or die( 'Restricted access' );
+require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 
 ?>
 <?php if ( $this->params->get( 'show_page_title', 1 ) ) : ?>
@@ -26,4 +27,22 @@ defined('_JEXEC') or die( 'Restricted access' );
         </h2>
         <span class="wordbridge_date"><?php echo( strftime( '%B %e, %Y', $this->date ) ); ?></span>
         <?php echo $this->content; ?>
+        <?php if ( !empty( $this->categories ) ): ?>
+        <div class="wordbridge_categories">
+        <?php
+            $categoryLinkList = array();
+            foreach ( $this->categories as $category )
+            {
+                $slug = WordbridgeHelper::nameToSlug( $category );
+                $categoryLinkList[] = sprintf( '<a href="%s" class="wordbridge_category">%s</a>',
+                                               $this->blogLink . '&c=' .
+                                               $slug . '&view=category' .
+                                               '&name=' . urlencode( $category ),
+                                               $this->escape( $category ) );
+            }
+            echo JText::_( 'COM_WORDBRIDGE_POSTED_IN' ). ': <span class="wordbridge_categories">' .
+                 implode( ', ', $categoryLinkList ) . '</span>';
+        ?>
+        </div>
+        <?php endif; ?>
     </div>

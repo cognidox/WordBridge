@@ -53,7 +53,7 @@ class WordbridgeHelper {
         // Get the last post information, removing the blog ID that
         // comes out when using the twitter API
         $info['last_post_id'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'id' )->item( 0 )->textContent;
-        $info['last_post_id'] = substr( $info['last_post_id'], strlen( $info['id'] ) );
+        $info['last_post_id'] = (int)substr( $info['last_post_id'], strlen( $info['id'] ) );
 
         // Update the stored blog basic details if need be
         if ( !empty( $info['description'] ) )
@@ -126,5 +126,15 @@ class WordbridgeHelper {
         $db =& JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s)', (int)$id, $db->Quote( $name, true ), $db->Quote( $description, true ) );
         $db->Execute( $query );
+    }
+
+    function nameToSlug( $name )
+    {
+        $name = strtolower( trim ( $name ) );
+        $name = preg_replace( '/[\.\s]/', '-', $name );
+        $name = preg_replace( '/[^\-a-z0-9]/', '', $name );
+        $name = preg_replace( '/--+/', '-', $name );
+        $name = preg_replace( '/^-|_$/', '', $name );
+        return $name;
     }
 }

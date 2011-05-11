@@ -21,37 +21,32 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 <?php if ( !empty( $this->blogTitle ) ): ?>
     <?php echo $this->escape( $this->blogTitle ); ?>
 <?php endif; ?>
-<div class="wordbridge_entries">
-    <?php foreach ($this->entries as $entry): ?>
-    <div class="wordbridge_entry">
-        <h2 class="wordbridge_title">
-            <?php echo sprintf( '<a href="%s">%s</a>', 
-                        JRoute::_( $this->blogLink . '&p=' . $entry['postid'] .
-                                   '&slug=' . $entry['slug'] . '&view=entry' ),
-                        $this->escape( $entry['title'] ) ); ?>
-        </h2>
-        <span class="wordbridge_date"><?php echo( strftime( '%B %e, %Y', $entry['date'] ) ); ?></span>
-        <?php echo $entry['content']; ?>
-
-        <?php if ( !empty( $entry['categories'] ) ): ?>
-        <div class="wordbridge_categories">
-        <?php
-            $categoryLinkList = array();
-            foreach ( $entry['categories'] as $category )
-            {
-                $slug = WordbridgeHelper::nameToSlug( $category );
-                $categoryLinkList[] = sprintf( '<a href="%s" class="wordbridge_category">%s</a>',
-                                               $this->blogLink . '&c=' .
-                                               $slug . '&view=category' .
-                                               '&name=' . urlencode( $category ),
-                                               $this->escape( $category ) );
-            }
-            echo JText::_( 'COM_WORDBRIDGE_POSTED_IN' ). ': <span class="wordbridge_categories">' .
-                 implode( ', ', $categoryLinkList ) . '</span>';
+<div class="wordbridge_categories">
+    <table class="wordbridge_category_table">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    <?php echo JText::sprintf( 'COM_WORDPRESS_CATEGORY_TITLE', $this->escape( $this->categoryName ) ); ?>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php 
+            $i = 0;
+            foreach( $this->entries as $entry ): 
         ?>
-        </div>
-        <?php endif; ?>
-    <?php endforeach; ?>
+            <tr class="<?php echo ($i++ % 2) ? "even" : "odd"; ?>">
+                <td><?php echo strftime( '%e.%m.%y', $entry['date'] ); ?></td>
+                <td><?php echo sprintf( '<a href="%s">%s</a>',
+                                        JRoute::_( $this->blogLink . 
+                                            '&p=' . $entry['postid'] .
+                                            '&slug=' . $entry['slug'] . 
+                                            '&view=entry' ),
+                                        $this->escape( $entry['title'] ) ); ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
     <?php if ( !empty( $this->olderLink ) || !empty( $this->newerLink ) ): ?>
         <div class="wordbridge_nav">
