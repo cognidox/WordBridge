@@ -47,6 +47,12 @@ class plgSearchWordbridge extends JPlugin
             return $results;
         }
 
+        if (is_array( $areas )) {
+            if (!array_intersect( $areas, array_keys( $this->onSearchAreas() ) )) {
+                return array();
+            }
+        }
+
         // We want to keep an eye on any blogs we've seen before, as
         // they may be linked in as multiple menus
         $seenBlogs = array();
@@ -88,7 +94,52 @@ class plgSearchWordbridge extends JPlugin
             }
         }
 
+        // Results really should be sorted
+        switch( $ordering )
+        {
+            case 'newest':
+                usort( $results, array( 'plgSearchWordbridge', '_sortByNewest' ) );
+                break;
+            case 'oldest':
+                usort( $results, array( 'plgSearchWordbridge', '_sortByOldest' ) );
+                break;
+            case 'alpha':
+            default:
+                usort( $results, array( 'plgSearchWordbridge', '_sortByName' ) );
+                break;
+        }
         return $results;
+    }
+
+    static function _sortByName( $a, $b )
+    {
+        return strcasecmp( $a->title, $b->title );
+    }
+
+    static function _sortByOldest( $a, $b )
+    {
+        if ( $a->created == $b->created )
+        {
+            return 0;
+        }
+        if ( $a->created < $b->created )
+        {
+            return -1;
+        }
+        return 1;
+    }
+
+    static function _sortByNewest( $a, $b )
+    {
+        if ( $a->created == $b->created )
+        {
+            return 0;
+        }
+        if ( $a->created < $b->created )
+        {
+            return 1;
+        }
+        return -1;
     }
 }
 

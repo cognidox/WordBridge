@@ -31,6 +31,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                         $this->escape( $entry['title'] ) ); ?>
         </h2>
         <span class="wordbridge_date"><?php echo( strftime( '%B %e, %Y', $entry['date'] ) ); ?></span>
+        <div class="wordbridge_content">
         <?php 
             if ( $this->params->get( 'wordbridge_show_links' ) == 'no' )
             {
@@ -49,6 +50,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                 echo $entry['content']; 
             }
         ?>
+        </div>
 
         <?php if ( !empty( $entry['categories'] ) ): ?>
         <div class="wordbridge_categories">
