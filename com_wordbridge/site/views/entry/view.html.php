@@ -32,29 +32,25 @@ class WordbridgeViewEntry extends JView
         $params = &$mainframe->getParams();
         $this->assignRef( 'params', $params );
 
-        $postid = JRequest::getInt( 'p', 1 );
+        $postid = JRequest::getInt( 'p', 0 );
+
+        $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
+        $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
         $model = &$this->getModel();
-        $entry =& $model->getEntry( $postid );
+        $entry =& $model->getEntry( $postid, $blogInfo['id'] );
 
         $baseUrl = JSite::getMenu()->getActive()->link;
         $this->assignRef( 'blogLink', $baseUrl );
 
-        if ( $entry['post_status'] == 'publish' )
-        {
-            $content = '<p>' . implode( '</p><p>', explode( "\n\n", $entry['description'] ) ) . '</p>';
-            $title = $entry['title'];
-            $slug = $entry['wp_slug'];
-            $categories = $entry['categories'];
-            $date = strtotime( $entry['dateCreated'] );
+        $content = '<p>' . implode( '</p><p>', explode( "\n\n", $entry['content'] ) ) . '</p>';
 
-            $this->assignRef( 'content', $content );
-            $this->assignRef( 'title', $title );
-            $this->assignRef( 'slug', $slut );
-            $this->assignRef( 'categories', $categories );
-            $this->assignRef( 'postid', $postid );
-            $this->assignRef( 'date', $date );
-        }
+        $this->assignRef( 'content', $content );
+        $this->assignRef( 'title', $entry['title'] );
+        $this->assignRef( 'slug', $entry['slug'] );
+        $this->assignRef( 'categories', $entry['categories'] );
+        $this->assignRef( 'postid', $entry['postid'] );
+        $this->assignRef( 'date', $entry['date'] );
 
         parent::display($tpl);
     }

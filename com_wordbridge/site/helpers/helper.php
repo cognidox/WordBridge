@@ -61,15 +61,16 @@ class WordbridgeHelper {
             $stored_blog = WordbridgeHelper::getBlogByID( $info['id'] );
             if ( $stored_blog )
             {
-                if ( $stored_blog['description'] != $info['description'] )
+                if ( $stored_blog['description'] != $info['description'] ||
+                     $stored_blog['name'] != $blogname )
                 {
-                    WordbridgeHelper::storeBlog( $info['id'], $info['description'] );
+                    WordbridgeHelper::storeBlog( $info['id'], $blogname, $info['description'] );
                 }
             }
             else
             {
                 // Store the blog data locally
-                WordbridgeHelper::storeBlog( $info['id'], $info['description'] );
+                WordbridgeHelper::storeBlog( $info['id'], $blogname, $info['description'] );
             }
         }
         return $info;
@@ -84,25 +85,46 @@ class WordbridgeHelper {
     function getBlogByID( $id )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, description FROM #__com_wordbridge_blogs WHERE blog_id = %d', (int)$id );
+        $query = sprintf( 'SELECT blog_id, blog_name, description FROM #__com_wordbridge_blogs WHERE blog_id = %d', (int)$id );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
         {
             return null;
         }
-        return array( 'id' => $blog[0], 'description' => $blog[1] );
+        return array( 'id' => $blog[0], 
+                      'name' => $blog[1],
+                      'description' => $blog[2] );
     }
 
+    /**
+     * getBlogByName
+     * Look up the locally stored blog details by name
+     * @return array containing id, name and description if found, or null if not
+     */
+    function getBlogByName( $name )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'SELECT blog_id, blog_name, description FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->Quote( $name, true ) );
+        $db->setQuery( $query );
+        $blog = $db->loadRow();
+        if ( $blog == null )
+        {
+            return null;
+        }
+        return array( 'id' => $blog[0], 
+                      'name' => $blog[1],
+                      'description' => $blog[2] );
+    }
 
     /**
      * storeBlog
-     * Store the ID and description of a blog
+     * Store the ID, name and description of a blog
      */
-    function storeBlog( $id, $description )
+    function storeBlog( $id, $name, $description )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s)', (int)$id, $db->Quote( $description, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s)', (int)$id, $db->Quote( $name, true ), $db->Quote( $description, true ) );
         $db->Execute( $query );
     }
 }

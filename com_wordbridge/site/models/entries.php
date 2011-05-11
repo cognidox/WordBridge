@@ -97,8 +97,9 @@ class WordbridgeModelEntries extends JModel
             {
                 // Update the locally cached post
                 $post_query = sprintf( 
-                    'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %s, %s, %s, %s)', 
+                    'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %d, %s, %s, %s, %s)', 
                     $entry['postid'],
+                    $blogInfo['id'],
                     $db->Quote( $entry['title'], true ),
                     $db->Quote( $entry['content'], true ),
                     $db->Quote( strftime( '%F %T %Z', $entry['date'] ), true),
@@ -112,13 +113,13 @@ class WordbridgeModelEntries extends JModel
                 $db->Execute( $page_query );
 
                 // Update the post category settings
-                $db->Execute( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = ' . $entry['postid'] );
+                $db->Execute( sprintf( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_id = %d', $entry['postid'], $blogInfo['id'] ) );
                 if ( count( $entry['categories'] ) )
                 {
                     foreach ( $entry['categories'] as $category )
                     {
                         $db->Execute( 
-                            sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %s)', $entry['postid'], $db->Quote( $category, true ) ) );
+                            sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blogInfo['id'], $db->Quote( $category, true ) ) );
                     }
                 }
             }

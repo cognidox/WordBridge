@@ -64,7 +64,7 @@ class WordbridgeViewEntries extends JView
         $entries = $model->getEntries();
         $this->assignRef( 'entries',   $entries );
         $title = $blogInfo['description'];
-        $this->assignRef( 'title',   $title );
+        $this->assignRef( 'blogTitle',   $title );
 
         parent::display($tpl);
     }

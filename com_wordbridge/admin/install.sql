@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `#__com_wordbridge_post_categories`;
 
 CREATE TABLE `#__com_wordbridge_blogs` (
     `blog_id` INT(11) unsigned NOT NULL,
+    `blog_name` VARCHAR(200) NOT NULL DEFAULT '',
     `description` text NOT NULL DEFAULT '',
     PRIMARY KEY (`blog_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -29,6 +30,7 @@ CREATE TABLE `#__com_wordbridge_pages` (
 
 CREATE TABLE `#__com_wordbridge_posts` (
     `post_id` INT(11) unsigned NOT NULL,
+    `blog_id` INT(11) unsigned NOT NULL,
     `title` text NOT NULL,
     `content` longtext NOT NULL,
     `post_date` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -38,7 +40,8 @@ CREATE TABLE `#__com_wordbridge_posts` (
 
 CREATE TABLE `#__com_wordbridge_post_categories` (
     `post_id` INT(11) unsigned NOT NULL,
+    `blog_id` INT(11) unsigned NOT NULL,
     `category` varchar(200) NOT NULL DEFAULT '',
-    PRIMARY KEY (`post_id`,`category`)
+    PRIMARY KEY (`post_id`, `blog_id`, `category`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 

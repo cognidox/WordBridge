@@ -17,8 +17,8 @@ defined('_JEXEC') or die( 'Restricted access' );
                             $this->escape($this->params->get( 'page_title' ) ) ); ?>
         </div>
 <?php endif; ?>
-<?php if ( !empty( $this->title ) ): ?>
-    <?php echo $this->escape( $this->title ); ?>
+<?php if ( !empty( $this->blogTitle ) ): ?>
+    <?php echo $this->escape( $this->blogTitle ); ?>
 <?php endif; ?>
 <div class="wordbridge_entries">
     <?php foreach ($this->entries as $entry): ?>
