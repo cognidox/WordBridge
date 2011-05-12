@@ -28,7 +28,6 @@
 
     <files folder="site">
         <folder>helpers</folder>
-        <folder>libraries</folder>
         <folder>models</folder>
         <folder>views</folder>
         <filename>controller.php</filename>
@@ -44,6 +43,7 @@
     <administration>
         <menu>Wordbridge</menu>
         <files folder="admin">
+            <folder>models</folder>
             <folder>views</folder>
             <filename>controller.php</filename>
             <filename>index.html</filename>

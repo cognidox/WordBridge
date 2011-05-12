@@ -41,9 +41,7 @@ class WordbridgeViewEntry extends JView
         $baseUrl = JSite::getMenu()->getActive()->link;
         $this->assignRef( 'blogLink', $baseUrl );
 
-        $content = '<p>' . implode( '</p><p>', explode( "\n\n", $entry['content'] ) ) . '</p>';
-
-        $this->assignRef( 'content', $content );
+        $this->assignRef( 'content', $entry['content'] );
         $this->assignRef( 'title', $entry['title'] );
         $this->assignRef( 'slug', $entry['slug'] );
         $this->assignRef( 'categories', $entry['categories'] );

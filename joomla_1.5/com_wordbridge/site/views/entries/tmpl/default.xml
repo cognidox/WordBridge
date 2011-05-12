@@ -13,8 +13,6 @@
                 <option value="yes">COM_WORDBRIDGE_YES</option>
                 <option value="no">COM_WORDBRIDGE_NO</option>
             </param>
-            <param name="wordbridge_blog_user" type="text" size="30" default="" label="COM_WORDBRIDGE_USER" description="COM_WORDBRIDGE_USER_DESCRIPTION" />
-            <param name="wordbridge_blog_pass" type="password" size="30" default="" label="COM_WORDBRIDGE_PASS" description="COM_WORDBRIDGE_PASS_DESCRIPTION" />
             <param name="wordbridge_blog_entry_feed_count" type="text" default="10" size="3" label="COM_WORDBRIDGE_FEED_COUNT" description="COM_WORDBRIDGE_FEED_COUNT_DESC" />
             <param name="wordbridge_searchable" type="radio" default="yes" label="COM_WORDBRIDGE_SEARCHABLE" description="COM_WORDBRIDGE_SEARCHABLE_DESC">
                 <option value="yes">COM_WORDBRIDGE_YES</option>

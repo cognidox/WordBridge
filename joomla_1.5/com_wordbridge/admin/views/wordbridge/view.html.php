@@ -20,6 +20,10 @@ class WordbridgeViewWordbridge extends JView
      **/
     function display($tpl = null)
     {
+        $model =& $this->getModel();
+        $stats = $model->getBlogStats();
+        $this->assignRef( 'stats', $stats );
+
         parent::display($tpl);
     }
 }

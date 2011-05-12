@@ -8,6 +8,8 @@ CREATE TABLE `#__com_wordbridge_blogs` (
     `blog_id` INT(11) unsigned NOT NULL,
     `blog_name` VARCHAR(200) NOT NULL DEFAULT '',
     `description` text NOT NULL DEFAULT '',
+    `last_post` text NOT NULL DEFAULT '',
+    `updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`blog_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
