@@ -11,8 +11,8 @@
     <version>0.1</version>
     <description>This component provides a bridge between Joomla and a wordpress.com blog, allowing blog entries from Wordpress to appear within Joomla.</description>
 
-    <installfile>install.php</installfile>
-    <uninstallfile></uninstallfile>
+    <installfile>install.wordbridge.php</installfile>
+    <uninstallfile>uninstall.wordbridge.php</uninstallfile>
 
     <install>
         <sql>
