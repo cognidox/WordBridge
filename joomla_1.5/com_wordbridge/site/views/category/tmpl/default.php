@@ -10,16 +10,18 @@ defined('_JEXEC') or die( 'Restricted access' );
 require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 
 ?>
-<?php if ( $this->params->get( 'show_page_title', 1 ) ) : ?>
+<div class="wordbridge_blog_header">
+    <?php if ( $this->params->get( 'show_page_title', 1 ) ) : ?>
         <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
         <?php echo sprintf( '<a href="%s">%s</a>',
                             JRoute::_( $this->blogLink ),
                             $this->escape($this->params->get( 'page_title' ) ) ); ?>
         </div>
-<?php endif; ?>
-<?php if ( !empty( $this->blogTitle ) ): ?>
-    <?php echo $this->escape( $this->blogTitle ); ?>
-<?php endif; ?>
+    <?php endif; ?>
+    <?php if ( !empty( $this->blogTitle ) ): ?>
+        <?php echo $this->escape( $this->blogTitle ); ?>
+    <?php endif; ?>
+</div>
 <div class="wordbridge_categories">
     <table class="wordbridge_category_table">
         <thead>

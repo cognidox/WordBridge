@@ -11,6 +11,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 
 ?>
 <div class="wordbridge_blog blog<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
+    <div class="wordbridge_blog_header">
     <?php if ( $this->params->get( 'show_page_title', 1 ) ) : ?>
         <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
         <?php echo sprintf( '<a href="%s">%s</a>',
@@ -21,6 +22,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
     <?php if ( !empty( $this->blogTitle ) ): ?>
         <?php echo $this->escape( $this->blogTitle ); ?>
     <?php endif; ?>
+    </div>
     <div class="wordbridge_entry">
         <h2 class="wordbridge_title contentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
             <?php echo $this->escape( $this->title ); ?>
