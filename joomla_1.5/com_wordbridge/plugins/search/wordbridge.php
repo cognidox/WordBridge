@@ -1,8 +1,7 @@
 <?php
 /**
  * @version     $Id$
- * @package     Joomla
- * @subpackage  Wordbridge
+ * @package  Wordbridge
  * @copyright   Copyright (C) 2011 Cognidox Ltd
  * @license  GNU AFFERO GENERAL PUBLIC LICENSE v3
  */
@@ -34,11 +33,6 @@ class plgSearchWordbridge extends JPlugin
     function onSearch( $text, $phrase = '', $ordering = '', $areas = null )
     {
         // Need to look up all the menu items that are linked to blogs
-        $db =& JFactory::getDBO();
-        $query = "SELECT m.id FROM #__menu AS m LEFT JOIN #__components AS c ON m.componentid = c.id WHERE c.option = 'com_wordbridge' and m.published = 1";
-        $db->setQuery( $query );
-        $menuIDs = $db->loadRowList();
-
         $results = array();
 
         $text = trim( $text );
@@ -56,10 +50,10 @@ class plgSearchWordbridge extends JPlugin
         // We want to keep an eye on any blogs we've seen before, as
         // they may be linked in as multiple menus
         $seenBlogs = array();
-        foreach ( $menuIDs as $mid )
+        $menuIDs = WordbridgeHelper::getWordbridgeMenuIDs();
+        $menu =& JSite::getMenu();
+        foreach ( $menuIDs as $itemid )
         {
-            $menu =& JSite::getMenu();
-            $itemid = $mid[0];
             $params =& $menu->getParams( $itemid );
             $blog_name = $params->get( 'wordbridge_blog_name' );
             if ( !$params || $params->get( 'wordbridge_searchable' ) == 'no' ||

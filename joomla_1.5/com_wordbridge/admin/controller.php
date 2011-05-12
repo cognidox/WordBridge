@@ -31,7 +31,7 @@ class WordbridgeController extends JController
         // Set a default view if none exists
         if ( ! JRequest::getCmd( 'view' ) )
         {
-            JRequest::setVar( 'view', 'entries' );
+            JRequest::setVar( 'view', 'wordbridge' );
         }
         parent::display();
     }

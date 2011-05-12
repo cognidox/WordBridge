@@ -1,8 +1,7 @@
 <?php
 /**
  * @version     $Id$
- * @package     Joomla
- * @subpackage  Wordbridge
+ * @package  Wordbridge
  * @copyright   Copyright (C) 2011 Cognidox Ltd
  * @license  GNU AFFERO GENERAL PUBLIC LICENSE v3
  */
@@ -16,8 +15,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 /**
  * Wordbridge View
  *
- * @package    Joomla.Tutorials
- * @subpackage Components
+ * @package    Wordbridge
  */
 class WordbridgeViewEntry extends JView
 {

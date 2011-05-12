@@ -1,8 +1,7 @@
 <?php
 /**
  * @version     $Id$
- * @package     Joomla
- * @subpackage  Wordbridge
+ * @package  Wordbridge
  * @copyright   Copyright (C) 2011 Cognidox Ltd
  * @license  GNU AFFERO GENERAL PUBLIC LICENSE v3
  */

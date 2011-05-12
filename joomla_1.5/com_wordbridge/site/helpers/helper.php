@@ -1,8 +1,7 @@
 <?php
 /**
  * @version     $Id$
- * @package     Joomla
- * @subpackage  Wordbridge
+ * @package  Wordbridge
  * @copyright   Copyright (C) 2011 Cognidox Ltd
  * @license  GNU AFFERO GENERAL PUBLIC LICENSE v3
  */
@@ -234,5 +233,23 @@ class WordbridgeHelper {
                                 'content' => $content );
         }
         return $results;
+    }
+
+    /**
+     * getWordbridgeMenuIDs
+     * Return a list of menu IDs for Wordbridge items
+     */
+    function getWordbridgeMenuIDs()
+    {
+        $result = array();
+        $db =& JFactory::getDBO();
+        $query = "SELECT m.id FROM #__menu AS m LEFT JOIN #__components AS c ON m.componentid = c.id WHERE c.option = 'com_wordbridge' and m.published = 1";
+        $db->setQuery( $query );
+        $menuIDs = $db->loadRowList();
+        foreach ( $menuIDs as $mid )
+        {
+            $result[] = $mid[0];
+        }
+        return $result;
     }
 }

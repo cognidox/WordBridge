@@ -11,7 +11,7 @@
     <version>0.1</version>
     <description>This component provides a bridge between Joomla and a wordpress.com blog, allowing blog entries from Wordpress to appear within Joomla.</description>
 
-    <installfile></installfile>
+    <installfile>install.php</installfile>
     <uninstallfile></uninstallfile>
 
     <install>
@@ -44,9 +44,12 @@
     <administration>
         <menu>Wordbridge</menu>
         <files folder="admin">
+            <folder>views</folder>
+            <filename>controller.php</filename>
             <filename>index.html</filename>
             <filename>install.sql</filename>
             <filename>uninstall.sql</filename>
+            <filename>wordbridge.php</filename>
         </files>
         <languages>
             <language tag="en-GB">admin/language/en-GB.com_wordbridge.ini</language>
@@ -54,4 +57,8 @@
     </administration>
 
     <params />
+
+    <plugins>
+        <plugin plugin="wordbridge" group="search" />
+    </plugins>
 </install>
