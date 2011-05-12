@@ -15,22 +15,31 @@ class WordbridgeHelper {
      * getTotalBlogPosts
      * @return int the total number of blog posts for the blog
      */
-    function getBlogInfo()
+    function getBlogInfo( $blogname = null, $useStored = false )
     {
         $info = array( 'count' => 0,
                        'description' => '',
                        'last_post_id' => 0,
                        'updated' => 0,
                        'last_post' => '',
+                       'name' => '',
                        'id' => '' );
 
-        $params = &JComponentHelper::getParams( 'com_wordbridge' );
-        $blogname = $params->get( 'wordbridge_blog_name' );
+        if ( $blogname == null )
+        {
+            $params = &JComponentHelper::getParams( 'com_wordbridge' );
+            $blogname = $params->get( 'wordbridge_blog_name' );
+        }
         if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
         {
             return $info;
         }
+        $info['name'] = $blogname;
         $stored_blog = WordbridgeHelper::getBlogByName( $blogname );
+        if ( $stored_blog && $useStored )
+        {
+            return $stored_blog;
+        }
 
         $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s', $blogname );
         $curl = curl_init();

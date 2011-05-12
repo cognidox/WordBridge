@@ -68,7 +68,7 @@ class plgSearchWordbridge extends JPlugin
             $seenBlogs[$blog_name] = 1;
 
             // Create a curl request for the search
-            $blogInfo = WordbridgeHelper::getBlogByName( $blog_name );
+            $blogInfo = WordbridgeHelper::getBlogInfo( $blog_name, true );
             if ( !$blogInfo )
             {
                 continue;
