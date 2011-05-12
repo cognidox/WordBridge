@@ -52,81 +52,15 @@ class WordbridgeModelCategory extends JModel
             $url = $tagUrl;
         }
 
-        // Use curl to get the data
-        $curl = curl_init();
-        curl_setopt( $curl, CURLOPT_URL, $url );
-        curl_setopt( $curl, CURLOPT_HEADER, false );
-        curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, true );
-        curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
-
-        $xml = curl_exec( $curl );
-        if ( empty( $xml ) )
-        {
-            curl_close( $curl );
-            return null;
-        }
-        // If we were looking for a category, and got a not found,
-        // call this a tag and try with the tag URL
-        if ( !$isTag &&
-             strpos( $xml, 'Page not found</title>', 500 ) !== false )
+        $results = WordbridgeHelper::getEntriesFromUrl( $url );
+        if ( !$isTag && !count( $results ) )
         {
             if ( $blogInfo['id'] )
             {
                 WordbridgeHelper::addTag( $blogInfo['id'], $category_name );
             }
-            curl_setopt( $curl, CURLOPT_URL, $tagUrl );
-            $xml = curl_exec( $curl );
             $isTag = true;
-        }
-        curl_close( $curl );
-        if ( empty( $xml ) )
-        {
-            return null;
-        }
-
-        $results = array();
-        $doc = new DOMDocument();
-        $doc->loadXML( $xml );
-        $this->_title = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
-        $entries = $doc->getElementsByTagName( 'item' );
-        foreach ( $entries as $item )
-        {
-            $title = $item->getElementsByTagName( 'title' )->item( 0 )->textContent;
-            $date = $item->getElementsByTagName( 'pubDate' )->item( 0 )->textContent;
-            $content = $item->getElementsByTagNameNS( 'http://purl.org/rss/1.0/modules/content/', 'encoded' )->item( 0 )->textContent;
-
-            // Work out the wordpress ID for this blog entry
-            $postid = null;
-            $guid = $item->getElementsByTagName( 'guid' )->item( 0 )->textContent;
-            $guid_parts = explode( 'p=', $guid );
-            if ( count( $guid_parts ) == 2 )
-            {
-                $postid = $guid_parts[1];
-            }
-
-            // Enumerate the wordpress categories for this entry
-            $categories = array();
-            foreach ( $item->getElementsByTagName( 'category' ) as $category )
-            {
-                $categories[] = $category->textContent;
-            }
-
-            // Get the human readable slug for this entry (may need for SEF)
-            $slug = '';
-            $feed_link = $item->getElementsByTagName( 'link' )->item( 0 )->textContent;
-            if ( !empty( $feed_link ) )
-            {
-                $link_parts = explode( '/', $feed_link );
-                $slug = $link_parts[ count( $link_parts ) - 2 ];
-            }
-
-            // Add the new entry to our blog entry list
-            $results[] = array( 'title' => $title,
-                                'postid' => $postid,
-                                'categories' => $categories,
-                                'slug' => $slug,
-                                'date' => strtotime( $date ),
-                                'content' => $content );
+            $results = WordbridgeHelper::getEntriesFromUrl( $tagUrl );
         }
         return (object) array( 'isTag' => $isTag,
                                'entries' => $results );

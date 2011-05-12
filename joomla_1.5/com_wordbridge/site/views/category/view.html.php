@@ -54,7 +54,7 @@ class WordbridgeViewCategory extends JView
         $categoryUrl = $baseUrl . '&c=' . urlencode( $category_name ) .
                        '&name=' . urlencode( $viewable_name ) . 
                        '&view=category';
-        if ( count( $entries ) == (int)$params->get( 'wordbridge_blog_entry_feed_count', 10 ) )
+        if ( count( $results->entries ) == (int)$params->get( 'wordbridge_blog_entry_feed_count', 10 ) )
         {
             $older_link = $categoryUrl . "&page=" . ( $page + 1 );
             $this->assignRef( 'olderLink', $older_link );

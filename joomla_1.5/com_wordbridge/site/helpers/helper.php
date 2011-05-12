@@ -202,12 +202,28 @@ class WordbridgeHelper {
             $content = $item->getElementsByTagNameNS( 'http://purl.org/rss/1.0/modules/content/', 'encoded' )->item( 0 )->textContent;
 
             // Work out the wordpress ID for this blog entry
+            // Looks like older blogs use a different format where the
+            // post id is not in the guid.
             $postid = null;
             $guid = $item->getElementsByTagName( 'guid' )->item( 0 )->textContent;
-            $guid_parts = explode( 'p=', $guid );
-            if ( count( $guid_parts ) == 2 )
+            if ( strpos( $guid, 'p=' ) !== false )
             {
-                $postid = $guid_parts[1];
+                $guid_parts = explode( 'p=', $guid );
+                if ( count( $guid_parts ) == 2 )
+                {
+                    $postid = $guid_parts[1];
+                }
+            }
+            else
+            {
+                // Lookup the post id in the description, as that contains
+                // a link to the stats
+                $desc = $guid = $item->getElementsByTagName( 'description' )->item( 0 )->textContent;
+                $matches = array();
+                if ( preg_match( '/stats\.wordpress\.com\/b.gif[^"]+post=(\d+)/',  $desc, $matches ) )
+                {
+                    $postid = $matches[1];
+                }
             }
 
             // Enumerate the wordpress categories for this entry

@@ -21,15 +21,14 @@ function WordbridgeBuildRoute( &$query )
         {
             case 'entry':
                 $segments[0] = 'post';
-                $segments[] = $query['p'];
+                $segments[] = $query['p'] . '-' . $query['slug'];
                 unset( $query['p'] );
-                $segments[] = $query['slug'];
                 unset( $query['slug'] );
                 break;
             case 'category':
                 $segments[] = '1-' . $query['c'];
                 unset( $query['c'] );
-                $segments[] = $query['name'];
+                $segments[] = '1-' . $query['name'];
                 unset( $query['name'] );
         }
         unset( $query['view'] );
@@ -51,13 +50,14 @@ function WordbridgeParseRoute( $segments )
             break;
         case 'post':
             $vars['view'] = 'entry';
-            $vars['p'] = $segments[1];
-            $vars['slug'] = $segments[2];
+            $parts = explode( '-', $segments[1], 2 );
+            $vars['p'] = $parts[0];
+            $vars['slug'] = $parts[1];
             break;
         case 'category':
             $vars['view'] = 'category';
             $vars['c'] = substr( $segments[1], 2 );
-            $vars['name'] = $segments[2];
+            $vars['name'] = substr( $segments[2], 2 );
             break;
     }
     return $vars;
