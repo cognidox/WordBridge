@@ -91,15 +91,15 @@ class plgSearchWordbridge extends JPlugin
         // Results really should be sorted
         switch( $ordering )
         {
-            case 'newest':
-                usort( $results, array( 'plgSearchWordbridge', '_sortByNewest' ) );
-                break;
             case 'oldest':
                 usort( $results, array( 'plgSearchWordbridge', '_sortByOldest' ) );
                 break;
             case 'alpha':
-            default:
                 usort( $results, array( 'plgSearchWordbridge', '_sortByName' ) );
+                break;
+            case 'newest':
+            default:
+                usort( $results, array( 'plgSearchWordbridge', '_sortByNewest' ) );
                 break;
         }
         return $results;
