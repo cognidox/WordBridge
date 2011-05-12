@@ -207,6 +207,18 @@ class WordbridgeHelper {
         foreach ( $entries as $item )
         {
             $title = $item->getElementsByTagName( 'title' )->item( 0 )->textContent;
+            // Some blogs don't have a title - so try the description with
+            // tags stripped out
+            if ( empty( $title ) )
+            {
+                $title = $item->getElementsByTagName( 'description' )->item( 0 )->textContent;
+                $title = strip_tags( $title );
+                if ( strlen( $title ) > 60 )
+                {
+                    $title = substr( $title, 0, 59 ) . '...';
+                }
+            }
+
             $date = $item->getElementsByTagName( 'pubDate' )->item( 0 )->textContent;
             $content = $item->getElementsByTagNameNS( 'http://purl.org/rss/1.0/modules/content/', 'encoded' )->item( 0 )->textContent;
 
