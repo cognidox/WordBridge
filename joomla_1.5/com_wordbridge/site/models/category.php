@@ -23,10 +23,10 @@ class WordbridgeModelCategory extends JModel
     function getCategoryPosts( $page, $category_name, $blog_id )
     {
         // Load up the entries
-        $entries = $this->_loadEntriesFromWeb( $page, $category_name );
-        WordbridgeHelper::storeBlogEntries( $entries, $blog_id );
+        $results = $this->_loadEntriesFromWeb( $page, $category_name );
+        WordbridgeHelper::storeBlogEntries( $results->entries, $blog_id );
 
-        return $entries;
+        return $results;
     }
 
     function _loadEntriesFromWeb( $page = 1, $category_name )
@@ -38,9 +38,20 @@ class WordbridgeModelCategory extends JModel
             return null;
         }
 
-        $url = sprintf( 'http://%s.wordpress.com/feed/?paged=%d&category_name=%s',
-                         $blogname, (int) $page, urlencode( $category_name ) );
+        $isTag = false;
+        $url = sprintf( 'http://%s.wordpress.com/category/%s/feed/?paged=%d',
+                         $blogname, urlencode( strtolower( $category_name ) ), (int) $page );
+        $tagUrl = sprintf( 'http://%s.wordpress.com/tag/%s/feed/?paged=%d',
+                         $blogname, urlencode( strtolower( $category_name ) ), (int) $page );
         
+        $blogInfo = WordbridgeHelper::getBlogByName( $blogname );
+        if ( $blogInfo['id'] && 
+             WordbridgeHelper::isTag( $blogInfo['id'], $category_name ) )
+        {
+            $isTag = true;
+            $url = $tagUrl;
+        }
+
         // Use curl to get the data
         $curl = curl_init();
         curl_setopt( $curl, CURLOPT_URL, $url );
@@ -49,6 +60,24 @@ class WordbridgeModelCategory extends JModel
         curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
 
         $xml = curl_exec( $curl );
+        if ( empty( $xml ) )
+        {
+            curl_close( $curl );
+            return null;
+        }
+        // If we were looking for a category, and got a not found,
+        // call this a tag and try with the tag URL
+        if ( !$isTag &&
+             strpos( $xml, 'Page not found</title>', 500 ) !== false )
+        {
+            if ( $blogInfo['id'] )
+            {
+                WordbridgeHelper::addTag( $blogInfo['id'], $category_name );
+            }
+            curl_setopt( $curl, CURLOPT_URL, $tagUrl );
+            $xml = curl_exec( $curl );
+            $isTag = true;
+        }
         curl_close( $curl );
         if ( empty( $xml ) )
         {
@@ -99,7 +128,8 @@ class WordbridgeModelCategory extends JModel
                                 'date' => strtotime( $date ),
                                 'content' => $content );
         }
-        return $results;
+        return (object) array( 'isTag' => $isTag,
+                               'entries' => $results );
     }
 
 }

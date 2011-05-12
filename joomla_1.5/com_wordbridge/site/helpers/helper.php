@@ -260,4 +260,45 @@ class WordbridgeHelper {
         }
         return $result;
     }
+
+    /**
+     * addTag
+     * Store something as a tag
+     */
+    function addTag( $blog_id, $name )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%d, %s)', $blog_id, $db->Quote( $name, true ) );
+        $db->Execute( $query );
+    }
+
+    /**
+     * addCategory
+     * Store something as a category
+     */
+    function addCategory( $blog_id, $name )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%d, %s)', $blog_id, $db->Quote( $name, true ) );
+        $db->Execute( $query );
+    }
+
+    /**
+     * isTag
+     * Determine if something is a tag
+     * @return boolean
+     */
+    function isTag( $blog_id, $name )
+    {
+        $db =& JFactory::getDBO();
+        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_id = %d AND tag = %s', $blog_id, $db->Quote( $name, true ) );
+        $db->setQuery( $query );
+        $tagCount = $db->loadResult();
+        if ( $tagCount )
+        {
+            return true;
+        }
+        return false;
+    }
 }
+

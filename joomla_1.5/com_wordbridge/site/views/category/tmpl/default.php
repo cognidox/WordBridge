@@ -27,7 +27,8 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <thead>
             <tr>
                 <th colspan="2">
-                    <?php echo JText::sprintf( 'COM_WORDPRESS_CATEGORY_TITLE', $this->escape( $this->categoryName ) ); ?>
+                    <?php echo JText::sprintf( 
+                        $this->isTag ? 'COM_WORDPRESS_TAG_TITLE' : 'COM_WORDPRESS_CATEGORY_TITLE', $this->escape( $this->categoryName ) ); ?>
                 </th>
             </tr>
         </thead>

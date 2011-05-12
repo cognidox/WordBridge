@@ -37,8 +37,9 @@ class WordbridgeViewCategory extends JView
         $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
         $model = &$this->getModel();
-        $entries =& $model->getCategoryPosts( $page, $category_name, $blogInfo['id'] );
-        $this->assignRef( 'entries', $entries );
+        $results =& $model->getCategoryPosts( $page, $category_name, $blogInfo['id'] );
+        $this->assignRef( 'entries', $results->entries );
+        $this->assignRef( 'isTag', $results->isTag );
 
         $baseUrl = JSite::getMenu()->getActive()->link;
         $this->assignRef( 'blogLink', $baseUrl );

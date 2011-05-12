@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS `#__com_wordbridge_cache`;
 DROP TABLE IF EXISTS `#__com_wordbridge_pages`;
 DROP TABLE IF EXISTS `#__com_wordbridge_posts`;
 DROP TABLE IF EXISTS `#__com_wordbridge_post_categories`;
+DROP TABLE IF EXISTS `#__com_wordbridge_blog_categories`;
+DROP TABLE IF EXISTS `#__com_wordbridge_blog_tags`;
 
 CREATE TABLE `#__com_wordbridge_blogs` (
     `blog_id` INT(11) unsigned NOT NULL,
@@ -45,5 +47,17 @@ CREATE TABLE `#__com_wordbridge_post_categories` (
     `blog_id` INT(11) unsigned NOT NULL,
     `category` varchar(200) NOT NULL DEFAULT '',
     PRIMARY KEY (`post_id`, `blog_id`, `category`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `#__com_wordbridge_blog_categories` (
+    `blog_id` INT(11) unsigned NOT NULL,
+    `category` varchar(200) NOT NULL DEFAULT '',
+    PRIMARY KEY (`blog_id`, `category`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `#__com_wordbridge_blog_tags` (
+    `blog_id` INT(11) unsigned NOT NULL,
+    `tag` varchar(200) NOT NULL DEFAULT '',
+    PRIMARY KEY (`blog_id`, `tag`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
