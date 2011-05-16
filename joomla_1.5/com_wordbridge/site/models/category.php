@@ -53,7 +53,7 @@ class WordbridgeModelCategory extends JModel
         }
 
         $results = WordbridgeHelper::getEntriesFromUrl( $url );
-        if ( !$isTag && !count( $results ) )
+        if ( !$isTag && !count( $results ) && $page <= 1 )
         {
             if ( $blogInfo['id'] )
             {
