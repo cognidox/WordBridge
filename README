@@ -3,8 +3,10 @@ WordBridge - WordPress.com to Joomla Bridge
 
 This is WordBridge, Cognidox Ltd's WordPress.com to Joomla bridge. 
 It can be used to connect a Joomla site with a wordpress.com hosted blog.
+Once a blog is linked via a Joomla menu item, updates to the wordpress.com 
+blog will automatically appear on the Joomla site.
 
-It is distributed under the GNU Affero General Public License v3:
+This component is distributed under the GNU Affero General Public License v3:
 http://www.opensource.org/licenses/agpl-v3.html
 
 This repository holds:
@@ -13,11 +15,38 @@ This repository holds:
     joomla_1.6/com_wordbridge - Joomla 1.6 component and plugin sources
 
 Installation packages for the Joomla components are provided in the Files 
-section of the Github repository.
+section of the GitHub repository.
 
 More information about installation and usage can be found on the Cognidox
 project page: 
 http://www.cognidox.com/opensource/wordbridge-wordpress-to-joomla-bridge
 
+Installation:
+------------
 
+To install the component, follow the steps below:
+
+1) Log into your Joomla site as an administrator.
+2) Ensure both the cURL and DOM PHP extensions are enabled.
+3) Select Extensions -> Extension Manager to bring up the Joomla
+   Extension Manager:Install screen.
+4) Upload the com_wordbridge zip file and click 'Upload & Install';
+   the component will be installed and enabled within Joomla.
+
+Using the Component:
+-------------------
+
+To use the component to link to a WordPress.com blog follow the steps
+below:
+
+1) Log into your Joomla site as a user who can add menu entries.
+2) Use Joomla's Menu Manager to add a new menu item.
+3) For the Menu Item Type, select WordBridge -> List of blog entries.
+4) In the menu item's WordBridge Settings, set the Wordpress blog name
+   to the name of your WordPress.com blog. e.g. if the blog is available
+   at http://example.wordpress.com/, then the blog name to enter is
+   'example'.
+5) Save the menu item entry. The blog will now appear in Joomla. New 
+   entries posted to the wordpress.com site will automatically appear
+   in the Joomla site.
 
