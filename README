@@ -1,0 +1,23 @@
+WordBridge - WordPress.com to Joomla Bridge
+===========================================
+
+This is WordBridge, Cognidox Ltd's WordPress.com to Joomla bridge. 
+It can be used to connect a Joomla site with a wordpress.com hosted blog.
+
+It is distributed under the GNU Affero General Public License v3:
+http://www.opensource.org/licenses/agpl-v3.html
+
+This repository holds:
+
+    joomla_1.5/com_wordbridge - Joomla 1.5 component and plugin sources
+    joomla_1.6/com_wordbridge - Joomla 1.6 component and plugin sources
+
+Installation packages for the Joomla components are provided in the Files 
+section of the Github repository.
+
+More information about installation and usage can be found on the Cognidox
+project page: 
+http://www.cognidox.com/opensource/wordbridge-wordpress-to-joomla-bridge
+
+
+
