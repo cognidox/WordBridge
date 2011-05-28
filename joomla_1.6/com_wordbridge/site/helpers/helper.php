@@ -27,7 +27,8 @@ class WordbridgeHelper {
 
         if ( $blogname == null )
         {
-            $params = &JComponentHelper::getParams( 'com_wordbridge' );
+            $app = &JFactory::getApplication();
+            $params = &$app->getParams();
             $blogname = $params->get( 'wordbridge_blog_name' );
         }
         if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
@@ -116,7 +117,7 @@ class WordbridgeHelper {
     function getBlogByName( $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->Quote( $name, true ) );
+        $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->quote( $name, true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -137,7 +138,7 @@ class WordbridgeHelper {
     function storeBlog( $id, $name, $description, $last_post )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, NOW())', (int)$id, $db->Quote( $name, true ), $db->Quote( $description, true ), $db->Quote( $last_post, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, NOW())', (int)$id, $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -162,10 +163,10 @@ class WordbridgeHelper {
                 'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %d, %s, %s, %s, %s)', 
                 $entry['postid'],
                 $blog_id,
-                $db->Quote( $entry['title'], true ),
-                $db->Quote( $entry['content'], true ),
-                $db->Quote( strftime( '%F %T %Z', $entry['date'] ), true),
-                $db->Quote( $entry['slug'], true ) );
+                $db->quote( $entry['title'], true ),
+                $db->quote( $entry['content'], true ),
+                $db->quote( strftime( '%F %T %Z', $entry['date'] ), true),
+                $db->quote( $entry['slug'], true ) );
             $db->setQuery( $post_query );
             $db->query();
 
@@ -177,7 +178,7 @@ class WordbridgeHelper {
                 foreach ( $entry['categories'] as $category )
                 {
                     $db->setQuery( 
-                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blog_id, $db->Quote( $category, true ) ) );
+                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blog_id, $db->quote( $category, true ) ) );
                     $db->query();
                 }
             }
@@ -286,12 +287,15 @@ class WordbridgeHelper {
     {
         $result = array();
         $db =& JFactory::getDBO();
-        $query = "SELECT m.id FROM #__menu AS m LEFT JOIN #__components AS c ON m.componentid = c.id WHERE c.option = 'com_wordbridge' and m.published = 1";
+        $query = "SELECT m.id FROM #__menu AS m LEFT JOIN #__extensions AS e ON m.component_id = e.extension_id WHERE e.name = 'com_wordbridge' and m.published = 1";
         $db->setQuery( $query );
         $menuIDs = $db->loadRowList();
-        foreach ( $menuIDs as $mid )
+        if ( $menuIDs != null && count( $menuIDs ) )
         {
-            $result[] = $mid[0];
+            foreach ( $menuIDs as $mid )
+            {
+                $result[] = $mid[0];
+            }
         }
         return $result;
     }
@@ -303,7 +307,7 @@ class WordbridgeHelper {
     function addTag( $blog_id, $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%d, %s)', $blog_id, $db->Quote( $name, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -315,7 +319,7 @@ class WordbridgeHelper {
     function addCategory( $blog_id, $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%d, %s)', $blog_id, $db->Quote( $name, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -328,7 +332,7 @@ class WordbridgeHelper {
     function isTag( $blog_id, $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_id = %d AND tag = %s', $blog_id, $db->Quote( $name, true ) );
+        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_id = %d AND tag = %s', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $tagCount = $db->loadResult();
         if ( $tagCount )

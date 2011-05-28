@@ -31,7 +31,8 @@ class WordbridgeModelCategory extends JModel
 
     function _loadEntriesFromWeb( $page = 1, $category_name )
     {
-        $params = &JComponentHelper::getParams( 'com_wordbridge' );
+        $app = &JFactory::getApplication();
+        $params = &$app->getParams();
         $blogname = $params->get( 'wordbridge_blog_name' );
         if ( empty( $blogname ) || ! function_exists ( 'curl_init' ) )
         {

@@ -12,9 +12,15 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.plugin.plugin');
 require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'helper.php' );
 
-JPlugin::loadLanguage( 'plg_search_wordbridge', JPATH_ADMINISTRATOR );
 class plgSearchWordbridge extends JPlugin
 {
+
+    public function __construct(& $subject, $config)
+    {
+        parent::__construct($subject, $config);
+        $this->loadLanguage();
+    }
+
     function onContentSearchAreas()
     {
         return $this->onSearchAreas();
@@ -26,7 +32,7 @@ class plgSearchWordbridge extends JPlugin
     }
 
     function onSearchAreas() {
-        $areas = array( 'wordbridge' => 'PLG_SEARCH_WORDBRIDGE_AREA' );
+        static $areas = array( 'wordbridge' => 'PLG_SEARCH_WORDBRIDGE_AREA' );
         return $areas;
     }
 

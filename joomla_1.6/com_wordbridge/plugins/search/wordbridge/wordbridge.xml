@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.5" type="plugin" group="search" method="upgrade">
+<extension version="1.6" type="plugin" group="search" method="upgrade">
 	<name>Search - Wordbridge</name>
 	<author>Cognidox Ltd</author>
 	<creationDate>May 2011</creationDate>
@@ -17,4 +17,4 @@
 	</files>
 	<params>
 	</params>
-</install>
+</extension>
