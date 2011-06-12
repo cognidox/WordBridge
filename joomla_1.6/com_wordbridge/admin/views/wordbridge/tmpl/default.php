@@ -32,9 +32,9 @@ defined('_JEXEC') or die( 'Restricted access' );
             <li>
             <?php echo $this->escape( $menu->title ); ?> -
             <?php echo sprintf( '<a href="%s">%s</a>',
-                                JRoute::_( 'index.php?option=com_menus&view=item&layout=edit&id=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_ADMIN' ) ); ?> /
+                                JRoute::_( 'index.php?option=com_menus&task=item.edit&id=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_ADMIN' ) ); ?> /
             <?php echo sprintf( '<a href="%s" target="_blank">%s</a>',
-                                JRoute::_( '/' . $menu->link . '&Itemid=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_SITE' ) ); ?>
+                                JRoute::_( JURI::root() . $menu->link . '&Itemid=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_SITE' ) ); ?>
             </li>
         <?php endforeach; ?></ul>
         </blockquote>

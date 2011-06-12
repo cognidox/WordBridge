@@ -34,7 +34,7 @@ defined('_JEXEC') or die( 'Restricted access' );
             <?php echo sprintf( '<a href="%s">%s</a>',
                                 JRoute::_( 'index.php?option=com_menus&menutype=' . $menu->menutype . '&task=edit&cid[]=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_ADMIN' ) ); ?> /
             <?php echo sprintf( '<a href="%s" target="_blank">%s</a>',
-                                JRoute::_( '/' . $menu->link . '&Itemid=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_SITE' ) ); ?>
+                                JRoute::_( JURI::root() . $menu->link . '&Itemid=' . $menu->id ), JText::_( 'COM_WORDBRIDGE_SITE' ) ); ?>
             </li>
         <?php endforeach; ?></ul>
         </blockquote>
