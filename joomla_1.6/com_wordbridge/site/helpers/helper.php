@@ -42,7 +42,7 @@ class WordbridgeHelper {
             return $stored_blog;
         }
 
-        $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s', $blogname );
+        $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s.wordpress.com', urlencode( $blogname ) );
         $curl = curl_init();
         curl_setopt( $curl, CURLOPT_URL, $url );
 
