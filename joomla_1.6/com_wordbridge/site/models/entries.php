@@ -24,7 +24,7 @@ class WordbridgeModelEntries extends JModel
      * passed in. Returns true if loaded
      * @return bool
      */
-    function loadEntries( $page = 1, $blogInfo )
+    function loadEntries( $page = 1, $blogInfo, $nocache = false )
     {
         // Look up the local cache for this page
         $db =& JFactory::getDBO();
@@ -33,7 +33,7 @@ class WordbridgeModelEntries extends JModel
                     $blogInfo['last_post_id'], $page );
         $db->setQuery( $query );
         $cache_id = $db->loadResult();
-        if ( $cache_id != null)
+        if ( $cache_id != null && !$nocache )
         {
             // We have a cached version of this content, so we
             // can load the entries up into _entries and return

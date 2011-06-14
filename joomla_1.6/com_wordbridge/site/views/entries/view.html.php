@@ -31,6 +31,7 @@ class WordbridgeViewEntries extends JView
         $this->assignRef( 'params', $params );
 
         $page = JRequest::getInt( 'page', 1 );
+        $nocache = JRequest::getBool( 'nocache', false );
 
         // Get the total number of blog entries
         $blogInfo = WordbridgeHelper::getBlogInfo();
@@ -58,7 +59,7 @@ class WordbridgeViewEntries extends JView
 
         // Load the model for the desired page
         $model = &$this->getModel();
-        $model->loadEntries( $page, $blogInfo );
+        $model->loadEntries( $page, $blogInfo, $nocache );
         $entries = $model->getEntries();
         $this->assignRef( 'entries',   $entries );
         $title = $blogInfo['description'];
