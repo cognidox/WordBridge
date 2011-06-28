@@ -261,12 +261,6 @@ class WordbridgeHelper {
                 $slug = $link_parts[ count( $link_parts ) - 2 ];
             }
 
-            // Trim the links if need be
-            if ( !$show_links )
-            {
-                $content = substr( $content, 0, strrpos( $content, '<br />' ) );
-            }
-
             // Add the new entry to our blog entry list
             $results[] = array( 'title' => $title,
                                 'postid' => $postid,
