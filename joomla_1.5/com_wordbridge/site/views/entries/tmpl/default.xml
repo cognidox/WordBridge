@@ -18,6 +18,7 @@
                 <option value="yes">COM_WORDBRIDGE_YES</option>
                 <option value="no">COM_WORDBRIDGE_NO</option>
             </param>
+            <param name="wordbridge_cachetime" type="text" default="300" size="4" label="COM_WORDBRIDGE_CACHETIME" description="COM_WORDBRIDGE_CACHETIME_DESC" />
         </params>
     </state>
 </metadata>

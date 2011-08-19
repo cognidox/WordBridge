@@ -21,6 +21,7 @@ CREATE TABLE `#__com_wordbridge_cache` (
     `statuses_count` INT(11) unsigned NOT NULL,
     `last_post_id` INT(11) unsigned NOT NULL,
     `page_num` INT(11) unsigned NOT NULL,
+    `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     KEY `page_lookup` (`blog_id`, `statuses_count`, `last_post_id`, `page_num`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

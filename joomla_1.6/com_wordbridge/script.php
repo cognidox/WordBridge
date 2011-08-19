@@ -25,9 +25,19 @@ defined('_JEXEC') or die('Restricted access');
  */
 class com_WordbridgeInstallerScript
 {
-    function update($parent)
+    function update( $parent )
     {
-        $this->install($parent);
+        $this->install( $parent );
+        // Alter the cache table if need be to add the cache time column
+        $db = JFactory::getDbo();
+        $fields = $db->getTableFields( '#__com_wordbridge_cache' );
+        if ( ! array_key_exists ( 'update_time', $fields['#__com_wordbridge_cache'] ) )
+        {
+            // Add the update_time column
+            $alterSql = sprintf( 'ALTER TABLE #__com_wordbridge_cache ADD COLUMN %s TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $db->nameQuote( 'update_time' ) );
+            $db->setQuery( $alterSql );
+            $db->query();
+        }
     }
 
     function install($parent) 

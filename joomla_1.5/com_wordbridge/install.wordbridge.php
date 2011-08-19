@@ -30,3 +30,13 @@ if ( is_a( $plugins, 'JSimpleXMLElement' ) && count( $plugins->children() ) )
     }
 }
 
+// Verify the update field exists in the cache
+$fields = $db->getTableFields( '#__com_wordbridge_cache' );
+if ( ! array_key_exists ( 'update_time', $fields['#__com_wordbridge_cache'] ) )
+{
+    // Add the update_time column
+    $alterSql = sprintf( 'ALTER TABLE #__com_wordbridge_cache ADD COLUMN %s TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $db->nameQuote( 'update_time' ) );
+    $db->setQuery( $alterSql );
+    $db->query();
+}
+

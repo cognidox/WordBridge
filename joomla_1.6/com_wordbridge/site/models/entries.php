@@ -28,6 +28,20 @@ class WordbridgeModelEntries extends JModel
     {
         // Look up the local cache for this page
         $db =& JFactory::getDBO();
+
+        // Determine if we can remove the cache
+        $app = &JFactory::getApplication();
+        $params = &$app->getParams();
+        $cacheTime = (int) $params->get( 'wordbridge_cachetime', 300 );
+        if ( $cacheTime < 0 )
+        {
+            $cacheTime = 0;
+        }
+        $expiredTime = time() - $cacheTime;
+        $clearSql = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_id = %d AND UNIX_TIMESTAMP(%s) < %d', $blogInfo['id'], $db->nameQuote( 'update_time' ), $expiredTime );
+        $db->setQuery( $clearSql );
+        $db->query();
+
         $query = sprintf( 'SELECT id FROM #__com_wordbridge_cache WHERE blog_id = %d AND statuses_count = %d AND last_post_id = %d AND page_num = %d',
                     $blogInfo['id'], $blogInfo['count'], 
                     $blogInfo['last_post_id'], $page );
