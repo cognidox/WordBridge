@@ -155,6 +155,10 @@ class WordbridgeHelper {
 
     function storeBlogEntries( $entries, $blog_id )
     {
+        if ( $entries == null )
+        {
+            return false;
+        }
         $db =& JFactory::getDBO();
         foreach ( $entries as $entry )
         {

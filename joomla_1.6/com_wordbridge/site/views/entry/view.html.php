@@ -38,7 +38,7 @@ class WordbridgeViewEntry extends JView
         $model = &$this->getModel();
         $entry =& $model->getEntry( $postid, $blogInfo['id'] );
 
-        $baseUrl = JSite::getMenu()->getActive()->link;
+        $baseUrl = JSite::getMenu()->getActive()->link . '&Itemid=' . JSite::getMenu()->getActive()->id;
         $this->assignRef( 'blogLink', $baseUrl );
 
         $this->assignRef( 'content', $entry['content'] );

@@ -35,7 +35,8 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <tbody>
         <?php 
             $i = 0;
-            foreach( $this->entries as $entry ): 
+            if ( $this->entries != null ):
+                foreach( $this->entries as $entry ): 
         ?>
             <tr class="<?php echo ($i++ % 2) ? "even" : "odd"; ?>">
                 <td class="wordbridge_col1"><?php echo strftime( '%e.%m.%y', $entry['date'] ); ?></td>
@@ -46,7 +47,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                                             '&view=entry' ),
                                         $this->escape( $entry['title'] ) ); ?></td>
             </tr>
-        <?php endforeach; ?>
+        <?php endforeach; endif; ?>
         </tbody>
     </table>
 
