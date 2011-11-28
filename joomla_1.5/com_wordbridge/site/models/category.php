@@ -44,10 +44,10 @@ class WordbridgeModelCategory extends JModel
         if ($page > 1) {
             $pageParam = '&paged=' . (int) $page;
         }
-        $url = sprintf( 'http://%s.wordpress.com/category/%s/feed/?category_name=%s%s',
-                         $blogname, $ucategory, $ucategory, $pageParam );
-        $tagUrl = sprintf( 'http://%s.wordpress.com/tag/%s/feed/?tag=%s%s',
-                         $blogname, $ucategory, $ucategory, $pageParam );
+        $url = sprintf( 'http://%s/category/%s/feed/?category_name=%s%s',
+                         WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $ucategory, $pageParam );
+        $tagUrl = sprintf( 'http://%s/tag/%s/feed/?tag=%s%s',
+                         WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $ucategory, $pageParam );
         
         $blogInfo = WordbridgeHelper::getBlogByName( $blogname );
         if ( $blogInfo['id'] && 

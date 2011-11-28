@@ -8,7 +8,7 @@
 	<authorEmail>opensource@cognidox.com</authorEmail>
 	<authorUrl>www.cognidox.com</authorUrl>
 	<version>0.3</version>
-	<description>Allows Searching of linked wordpress.com blogs</description>
+	<description>Allows Searching of linked WordPress blogs</description>
     <languages>
         <language tag="en-GB">language/en-GB/en-GB.plg_search_wordbridge.ini</language>
     </languages>

@@ -73,7 +73,7 @@ class plgSearchWordbridge extends JPlugin
             {
                 continue;
             }
-            $url = sprintf( 'http://%s.wordpress.com/?s=%s&feed=rss2', $blog_name, urlencode( $text ) );
+            $url = sprintf( 'http://%s/?s=%s&feed=rss2', WordbridgeHelper::fqdnBlogName( $blog_name ), urlencode( $text ) );
             $entries = WordbridgeHelper::getEntriesFromUrl( $url );
             WordbridgeHelper::storeBlogEntries( $entries, $blogInfo['id'] );
             foreach ( $entries as $entry )

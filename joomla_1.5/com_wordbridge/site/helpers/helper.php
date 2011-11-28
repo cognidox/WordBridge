@@ -41,28 +41,37 @@ class WordbridgeHelper {
             return $stored_blog;
         }
 
-        $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s.wordpress.com', urlencode( $blogname ) );
-        $curl = curl_init();
-        curl_setopt( $curl, CURLOPT_URL, $url );
+        // Only use the twitter API for blogs hosted at wordpress.com
+        $fqdn = WordbridgeHelper::fqdnBlogName( $blogname );
+        if ( substr( $fqdn, -14 ) == '.wordpress.com' )
+        {
+            $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s', urlencode( $fqdn ) );
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, $url );
 
-        $xml = WordbridgeHelper::curl_redir_exec( $curl );
-        curl_close( $curl );
-        if ( empty( $xml ) )
+            $xml = WordbridgeHelper::curl_redir_exec( $curl );
+            curl_close( $curl );
+            if ( empty( $xml ) )
+            {
+                return $info;
+            }
+
+            $doc = new DOMDocument();
+            $doc->loadXML( $xml );
+            $info['count'] = $doc->getElementsByTagName( 'statuses_count' )->item( 0 )->textContent;
+            $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
+            $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
+            // Get the last post information, removing the blog ID that
+            // comes out when using the twitter API
+            $info['last_post_id'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'id' )->item( 0 )->textContent;
+            $info['last_post_id'] = (int)substr( $info['last_post_id'], strlen( $info['id'] ) );
+            $info['last_post'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'text' )->item( 0 )->textContent;
+
+        }
+        else
         {
             return $info;
         }
-
-        $doc = new DOMDocument();
-        $doc->loadXML( $xml );
-        $info['count'] = $doc->getElementsByTagName( 'statuses_count' )->item( 0 )->textContent;
-        $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
-        $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
-
-        // Get the last post information, removing the blog ID that
-        // comes out when using the twitter API
-        $info['last_post_id'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'id' )->item( 0 )->textContent;
-        $info['last_post_id'] = (int)substr( $info['last_post_id'], strlen( $info['id'] ) );
-        $info['last_post'] = $doc->getElementsByTagName( 'status' )->item( 0 )->getElementsByTagName( 'text' )->item( 0 )->textContent;
 
         // Update the stored blog basic details if need be
         if ( !empty( $info['description'] ) )
@@ -375,6 +384,22 @@ class WordbridgeHelper {
         {
             return $data;
         }
+    }
+
+    /**
+     * fqdnBlogName
+     * Turns a blog name into a fully qualified hostname that can be
+     * used in URLs. This will assume things without a '.' are 
+     * hosted on wordpress.com, while others are full hostnames
+     */
+    function fqdnBlogName( $name )
+    {
+        $name = trim( strtolower( $name ) );
+        if ( strpos( $name, '.' ) == false )
+        {
+            return sprintf( '%s.wordpress.com', $name );
+        }
+        return $name;
     }
 }
 

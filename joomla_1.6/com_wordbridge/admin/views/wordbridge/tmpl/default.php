@@ -7,6 +7,7 @@
  */
 
 defined('_JEXEC') or die( 'Restricted access' );
+require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'helper.php' );
 
 ?>
 <h2><?php echo JText::_( 'COM_WORDBRIDGE' ); ?></h2>
@@ -16,7 +17,7 @@ defined('_JEXEC') or die( 'Restricted access' );
     <?php echo JText::_( 'COM_WORDBRIDGE_BRIDGE_MSG' ); ?>
     </p>
     <?php foreach ( $this->stats as $blog ): ?>
-        <?php echo sprintf( '<h3><a href="http://%s.wordpress.com/" target="_blank">%s.wordpress.com</a></h3>', $this->escape( $blog->blog_name ), $this->escape( $blog->blog_name ) ); ?>
+        <?php echo sprintf( '<h3><a href="http://%s/" target="_blank">%s</a></h3>', $this->escape( WordbridgeHelper::fqdnBlogName( $blog->blog_name ) ), $this->escape( WordbridgeHelper::fqdnBlogName( $blog->blog_name ) ) ); ?>
         <blockquote id="wordbridge_blog_<?php echo $blog->blog_name; ?>">
         <span class="wordbridge_updated"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_UPDATED', 
                 ( $blog->updated == null ? JText::_( 'COM_WORDBRIDGE_NEVER' ) :
