@@ -70,7 +70,25 @@ class WordbridgeHelper {
         }
         else
         {
-            return $info;
+            $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, $url );
+
+            $xml = WordbridgeHelper::curl_redir_exec( $curl );
+            curl_close( $curl );
+            if ( empty( $xml ) )
+            {
+                return $info;
+            }
+
+            $doc = new DOMDocument();
+            $doc->loadXML( $xml );
+            $info['count'] = $doc->getElementsByTagName( 'count' )->item( 0 )->textContent;
+            $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
+            $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
+            // Get the last post information
+            $info['last_post_id'] = $doc->getElementsByTagName( 'last_post_id' )->item( 0 )->textContent;
+            $info['last_post'] = $doc->getElementsByTagName( 'last_post' )->item( 0 )->textContent;
         }
 
         // Update the stored blog basic details if need be
@@ -362,7 +380,7 @@ class WordbridgeHelper {
         if ( $http_code == 301 || $http_code == 302 )
         {
             $matches = array();
-            preg_match( '/Location:(.*?)\n/', $header, $matches );
+            preg_match( '/Location:(.*?)(?:\n|$)/', $header, $matches );
             $url = parse_url( trim( array_pop( $matches ) ) );
             if ( !$url )
             {

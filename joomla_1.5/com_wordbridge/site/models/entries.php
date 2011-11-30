@@ -132,9 +132,8 @@ class WordbridgeModelEntries extends JModel
             return false;
         }
 
-        $url = sprintf( 'http://%s/feed/?paged=%d',
+        $url = sprintf( 'http://%s/?feed=rss2&paged=%d',
                          WordbridgeHelper::fqdnBlogName( $blogname ), (int) $page );
-        
         $this->_entries = WordbridgeHelper::getEntriesFromUrl( $url );
         return true;
     }

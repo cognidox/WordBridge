@@ -21,6 +21,10 @@ function WordbridgeBuildRoute( &$query )
         {
             case 'entry':
                 $segments[0] = 'post';
+                if ( strpos( $query['slug'], '.' ) !== false )
+                {
+                    $query['slug'] = preg_replace( '/^(.+?)\..*/', '${1}', $query['slug'] );
+                }
                 $segments[] = $query['p'] . '-' . $query['slug'];
                 unset( $query['p'] );
                 unset( $query['slug'] );
