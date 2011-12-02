@@ -41,7 +41,9 @@ class WordbridgeViewCategory extends JView
         $this->assignRef( 'entries', $results->entries );
         $this->assignRef( 'isTag', $results->isTag );
 
-        $baseUrl = JSite::getMenu()->getActive()->link . '&Itemid=' . JSite::getMenu()->getActive()->id;
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
+        $baseUrl = $menu->getActive()->link . '&Itemid=' . $menu->getActive()->id;
         $this->assignRef( 'blogLink', $baseUrl );
 
         $viewable_name = trim( JRequest::getVar( 'name', '' ) );

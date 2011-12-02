@@ -57,10 +57,11 @@ class plgSearchWordbridge extends JPlugin
         // they may be linked in as multiple menus
         $seenBlogs = array();
         $menuIDs = WordbridgeHelper::getWordbridgeMenuIDs();
-        $menu =& JSite::getMenu();
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
         foreach ( $menuIDs as $itemid )
         {
-            $params =& $menu->getParams( $itemid );
+            $params = $menu->getParams( $itemid );
             $blog_name = $params->get( 'wordbridge_blog_name' );
             if ( !$params || $params->get( 'wordbridge_searchable' ) == 'no' ||
                  empty( $blog_name ) )

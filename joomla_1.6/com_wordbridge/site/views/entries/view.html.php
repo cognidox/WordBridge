@@ -44,7 +44,9 @@ class WordbridgeViewEntries extends JView
             $page = $max_page;
         }
 
-        $baseUrl = JSite::getMenu()->getActive()->link . '&Itemid=' . JSite::getMenu()->getActive()->id;
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
+        $baseUrl = $menu->getActive()->link . '&Itemid=' . $menu->getActive()->id;
         $this->assignRef( 'blogLink', $baseUrl );
         if ( $page < $max_page )
         {
