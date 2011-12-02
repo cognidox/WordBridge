@@ -22,11 +22,11 @@ class WordbridgeModelWordbridge extends JModel
         // Lookup the menus that we're using
         $menuIDs = WordbridgeHelper::getWordbridgeMenuIDs();
         $menuToBlogMap = array();
-        $app =& JFactory::getApplication();
-        $menu =& $app->getMenu( 'site' );
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu( 'site' );
         foreach ( $menuIDs as $itemid )
         {
-            $params =& $menu->getParams( $itemid );
+            $params = $menu->getParams( $itemid );
             $menu_blog_name = $params->get( 'wordbridge_blog_name' );
             if ( empty( $menu_blog_name ) )
             {
@@ -39,7 +39,7 @@ class WordbridgeModelWordbridge extends JModel
             $menuToBlogMap[$menu_blog_name][] = $menu->getItem( $itemid );
         }
 
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         foreach ( array_keys( $menuToBlogMap ) as $blog )
         {
             $item = (object) array(

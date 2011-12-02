@@ -227,7 +227,6 @@ class WordbridgeHelper {
         $results = array();
         $doc = new DOMDocument();
         $doc->loadXML( $xml );
-        $this->_title = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
         $entries = $doc->getElementsByTagName( 'item' );
         foreach ( $entries as $item )
         {

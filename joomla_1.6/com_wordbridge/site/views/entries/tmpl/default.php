@@ -33,7 +33,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                                    '&slug=' . $entry['slug'] . '&view=entry' ),
                         $this->escape( $entry['title'] ) ); ?>
                 </h2>
-                <span class="wordbridge_date"><?php echo( strftime( '%B %e, %Y', $entry['date'] ) ); ?></span>
+                <span class="wordbridge_date"><?php echo JFactory::getDate( $entry['date'] )->toFormat( '%B %e, %Y', true ); ?></span>
                 <div class="wordbridge_content">
                 <?php 
                     if ( $this->params->get( 'wordbridge_show_links' ) == 'no' )

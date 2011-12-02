@@ -39,7 +39,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                 foreach( $this->entries as $entry ): 
         ?>
             <tr class="<?php echo ($i++ % 2) ? "even" : "odd"; ?>">
-                <td class="wordbridge_col1"><?php echo strftime( '%e.%m.%y', $entry['date'] ); ?></td>
+                <td class="wordbridge_col1"><?php echo JFactory::getDate( $entry['date'] )->toFormat( '%e.%m.%y', true ); ?></td>
                 <td class="wordbridge_col2"><?php echo sprintf( '<a href="%s">%s</a>',
                                         JRoute::_( $this->blogLink . 
                                             '&p=' . $entry['postid'] .

@@ -15,7 +15,7 @@ class WordbridgeHelper {
      * getTotalBlogPosts
      * @return int the total number of blog posts for the blog
      */
-    function getBlogInfo( $blogname = null, $useStored = false )
+    public static function getBlogInfo( $blogname = null, $useStored = false )
     {
         $info = array( 'count' => 0,
                        'description' => '',
@@ -27,8 +27,8 @@ class WordbridgeHelper {
 
         if ( $blogname == null )
         {
-            $app = &JFactory::getApplication();
-            $params = &$app->getParams();
+            $app = JFactory::getApplication();
+            $params = $app->getParams();
             $blogname = $params->get( 'wordbridge_blog_name' );
         }
         if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
@@ -71,7 +71,25 @@ class WordbridgeHelper {
         }
         else
         {
-            return $info;
+            $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, $url );
+
+            $xml = WordbridgeHelper::curl_redir_exec( $curl );
+            curl_close( $curl );
+            if ( empty( $xml ) )
+            {
+                return $info;
+            }
+
+            $doc = new DOMDocument();
+            $doc->loadXML( $xml );
+            $info['count'] = $doc->getElementsByTagName( 'count' )->item( 0 )->textContent;
+            $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
+            $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
+            // Get the last post information
+            $info['last_post_id'] = $doc->getElementsByTagName( 'last_post_id' )->item( 0 )->textContent;
+            $info['last_post'] = $doc->getElementsByTagName( 'last_post' )->item( 0 )->textContent;
         }
 
         // Update the stored blog basic details if need be
@@ -103,7 +121,7 @@ class WordbridgeHelper {
      */
     function getBlogByID( $id )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_id = %d', (int)$id );
         $db->setQuery( $query );
         $blog = $db->loadRow();
@@ -123,9 +141,9 @@ class WordbridgeHelper {
      * Look up the locally stored blog details by name
      * @return array containing id, name and description if found, or null if not
      */
-    function getBlogByName( $name )
+    public static function getBlogByName( $name )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->quote( $name, true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
@@ -146,13 +164,13 @@ class WordbridgeHelper {
      */
     function storeBlog( $id, $name, $description, $last_post )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, NOW())', (int)$id, $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
         $db->setQuery( $query );
         $db->query();
     }
 
-    function nameToSlug( $name )
+    public static function nameToSlug( $name )
     {
         $name = strtolower( trim ( $name ) );
         $name = preg_replace( '/[\.\s]/', '-', $name );
@@ -162,13 +180,13 @@ class WordbridgeHelper {
         return $name;
     }
 
-    function storeBlogEntries( $entries, $blog_id )
+    public static function storeBlogEntries( $entries, $blog_id )
     {
         if ( $entries == null )
         {
             return false;
         }
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         foreach ( $entries as $entry )
         {
             // Update the locally cached post
@@ -178,7 +196,7 @@ class WordbridgeHelper {
                 $blog_id,
                 $db->quote( $entry['title'], true ),
                 $db->quote( $entry['content'], true ),
-                $db->quote( strftime( '%F %T %Z', $entry['date'] ), true),
+                $db->quote( JFactory::getDate( $entry['date'] )->toFormat( '%F %T %Z' ), true ),
                 $db->quote( $entry['slug'], true ) );
             $db->setQuery( $post_query );
             $db->query();
@@ -198,7 +216,7 @@ class WordbridgeHelper {
         }
     }
 
-    function getEntriesFromUrl( $url )
+    public static function getEntriesFromUrl( $url )
     {
         // Use curl to get the data
         $curl = curl_init();
@@ -214,7 +232,6 @@ class WordbridgeHelper {
         $results = array();
         $doc = new DOMDocument();
         $doc->loadXML( $xml );
-        $this->_title = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
         $entries = $doc->getElementsByTagName( 'item' );
         foreach ( $entries as $item )
         {
@@ -280,7 +297,7 @@ class WordbridgeHelper {
                                 'postid' => $postid,
                                 'categories' => $categories,
                                 'slug' => $slug,
-                                'date' => strtotime( $date ),
+                                'date' => JFactory::getDate( $date )->toUnix(),
                                 'content' => $content );
         }
         return $results;
@@ -290,10 +307,10 @@ class WordbridgeHelper {
      * getWordbridgeMenuIDs
      * Return a list of menu IDs for Wordbridge items
      */
-    function getWordbridgeMenuIDs()
+    public static function getWordbridgeMenuIDs()
     {
         $result = array();
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = "SELECT m.id FROM #__menu AS m LEFT JOIN #__extensions AS e ON m.component_id = e.extension_id WHERE e.name = 'com_wordbridge' and m.published = 1";
         $db->setQuery( $query );
         $menuIDs = $db->loadRowList();
@@ -311,9 +328,9 @@ class WordbridgeHelper {
      * addTag
      * Store something as a tag
      */
-    function addTag( $blog_id, $name )
+    public static function addTag( $blog_id, $name )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
@@ -325,7 +342,7 @@ class WordbridgeHelper {
      */
     function addCategory( $blog_id, $name )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
@@ -336,9 +353,9 @@ class WordbridgeHelper {
      * Determine if something is a tag
      * @return boolean
      */
-    function isTag( $blog_id, $name )
+    public static function isTag( $blog_id, $name )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_id = %d AND tag = %s', $blog_id, $db->quote( $name, true ) );
         $db->setQuery( $query );
         $tagCount = $db->loadResult();
@@ -355,7 +372,7 @@ class WordbridgeHelper {
      * Taken from http://php.net/manual/en/function.curl-setopt.php#71313
      * eion at bigfoot.com
      */
-    function curl_redir_exec( $ch, $curl_loops = 0 )
+    protected static function curl_redir_exec( $ch, $curl_loops = 0 )
     {
         static $curl_max_loops = 20;
         if ( $curl_loops++ >= $curl_max_loops )
@@ -370,7 +387,7 @@ class WordbridgeHelper {
         if ( $http_code == 301 || $http_code == 302 )
         {
             $matches = array();
-            preg_match( '/Location:(.*?)\n/', $header, $matches );
+            preg_match( '/Location:(.*?)(?:\n|$)/', $header, $matches );
             $url = parse_url( trim( array_pop( $matches ) ) );
             if ( !$url )
             {
@@ -384,7 +401,7 @@ class WordbridgeHelper {
                 $url['host'] = $last_url['host'];
             if ( !$url['path'] )
                 $url['path'] = $last_url['path'];
-            $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
+            $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ( array_key_exists( 'query', $url ) ? '?'.$url['query'] : '' );
             curl_setopt( $ch, CURLOPT_URL, $new_url );
             return WordbridgeHelper::curl_redir_exec( $ch, $curl_loops );
         }
@@ -400,7 +417,7 @@ class WordbridgeHelper {
      * used in URLs. This will assume things without a '.' are 
      * hosted on wordpress.com, while others are full hostnames
      */
-    function fqdnBlogName( $name )
+    public static function fqdnBlogName( $name )
     {
         $name = trim( strtolower( $name ) );
         if ( strpos( $name, '.' ) == false )

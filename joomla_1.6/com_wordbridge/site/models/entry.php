@@ -18,7 +18,7 @@ class WordbridgeModelEntry extends JModel
      */
     function getEntry( $postid, $blogid )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'SELECT post_id, title, content, UNIX_TIMESTAMP(post_date), slug FROM #__com_wordbridge_posts WHERE post_id = %d AND blog_id = %d', $postid, $blogid );
         $db->setQuery( $query );
         $entry = $db->loadRow();

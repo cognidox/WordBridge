@@ -25,9 +25,9 @@ class WordbridgeViewEntries extends JView
      **/
     function display($tpl = null)
     {
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
 
-        $params = &$mainframe->getParams();
+        $params = $mainframe->getParams();
         $this->assignRef( 'params', $params );
 
         $page = JRequest::getInt( 'page', 1 );
@@ -58,7 +58,7 @@ class WordbridgeViewEntries extends JView
         }
 
         // Load the model for the desired page
-        $model = &$this->getModel();
+        $model = $this->getModel();
         $model->loadEntries( $page, $blogInfo, $nocache );
         $entries = $model->getEntries();
         $this->assignRef( 'entries',   $entries );

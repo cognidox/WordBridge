@@ -27,7 +27,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <h2 class="wordbridge_title contentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
             <?php echo $this->escape( $this->title ); ?>
         </h2>
-        <span class="wordbridge_date"><?php echo( strftime( '%B %e, %Y', $this->date ) ); ?></span>
+        <span class="wordbridge_date"><?php echo JFactory::getDate( $this->date )->toFormat( '%B %e, %Y', true ); ?></span>
         <div class="wordbridge_content">
         <?php 
             if ( $this->params->get( 'wordbridge_show_links' ) == 'no' )

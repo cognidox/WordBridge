@@ -26,7 +26,7 @@ class WordbridgeController extends JController
         $this->registerDefaultTask( 'display' );
     }
 
-    function display()
+    function display( $cachable = false, $urlparams = false )
     {
         // Set a default view if none exists
         if ( ! JRequest::getCmd( 'view' ) )

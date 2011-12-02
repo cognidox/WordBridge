@@ -22,10 +22,10 @@ class WordbridgeViewWordbridge extends JView
     {
         JHTML::_( 'stylesheet', 'admin.css', 'media/com_wordbridge/css/' );
         JToolBarHelper::title( JText::_( 'COM_WORDBRIDGE' ), 'wordbridge' );
-        $document = & JFactory::getDocument();
+        $document = JFactory::getDocument();
         $document->setTitle( JText::_( 'COM_WORDBRIDGE' ) );
 
-        $model =& $this->getModel();
+        $model = $this->getModel();
         $stats = $model->getBlogStats();
         $this->assignRef( 'stats', $stats );
 

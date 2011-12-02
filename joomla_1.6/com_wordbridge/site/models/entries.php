@@ -27,11 +27,11 @@ class WordbridgeModelEntries extends JModel
     function loadEntries( $page = 1, $blogInfo, $nocache = false )
     {
         // Look up the local cache for this page
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
 
         // Determine if we can remove the cache
-        $app = &JFactory::getApplication();
-        $params = &$app->getParams();
+        $app = JFactory::getApplication();
+        $params = $app->getParams();
         $cacheTime = (int) $params->get( 'wordbridge_cachetime', 300 );
         if ( $cacheTime < 0 )
         {
@@ -69,7 +69,7 @@ class WordbridgeModelEntries extends JModel
      */
     function _storeEntriesInDB( $page, $blogInfo )
     {
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         // First, clean the cache, by looking up all the current
         // cached entries, removing the page entries, then deleting
         // the main cache mapping
@@ -126,15 +126,15 @@ class WordbridgeModelEntries extends JModel
 
     function _loadEntriesFromWeb( $page = 1 )
     {
-        $app = &JFactory::getApplication();
-        $params = &$app->getParams();
+        $app = JFactory::getApplication();
+        $params = $app->getParams();
         $blogname = $params->get( 'wordbridge_blog_name' );
         if ( empty( $blogname ) || ! function_exists ( 'curl_init' ) )
         {
             return false;
         }
 
-        $url = sprintf( 'http://%s/feed/?paged=%d',
+        $url = sprintf( 'http://%s/?feed=rss2&paged=%d',
                          WordbridgeHelper::fqdnBlogName( $blogname ), (int) $page );
         
         $this->_entries = WordbridgeHelper::getEntriesFromUrl( $url );
@@ -144,7 +144,7 @@ class WordbridgeModelEntries extends JModel
     function _loadEntriesFromDB( $cache_id )
     {
         $this->_entries = array();
-        $db =& JFactory::getDBO();
+        $db = JFactory::getDBO();
         $query = sprintf( 'SELECT p.post_id, p.title, p.content, UNIX_TIMESTAMP(p.post_date), p.slug FROM #__com_wordbridge_pages AS pages LEFT JOIN #__com_wordbridge_posts AS p ON pages.post_id = p.post_id WHERE pages.cache_id = %d ORDER BY pages.post_order ASC', $cache_id );
         $db->setQuery( $query );
         $rows = $db->loadRowList();

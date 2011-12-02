@@ -25,9 +25,9 @@ class WordbridgeViewEntry extends JView
      **/
     function display($tpl = null)
     {
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
 
-        $params = &$mainframe->getParams();
+        $params = $mainframe->getParams();
         $this->assignRef( 'params', $params );
 
         $postid = JRequest::getInt( 'p', 0 );
@@ -35,8 +35,8 @@ class WordbridgeViewEntry extends JView
         $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
         $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
-        $model = &$this->getModel();
-        $entry =& $model->getEntry( $postid, $blogInfo['id'] );
+        $model = $this->getModel();
+        $entry = $model->getEntry( $postid, $blogInfo['id'] );
 
         $baseUrl = JSite::getMenu()->getActive()->link . '&Itemid=' . JSite::getMenu()->getActive()->id;
         $this->assignRef( 'blogLink', $baseUrl );

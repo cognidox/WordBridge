@@ -25,9 +25,9 @@ class WordbridgeViewCategory extends JView
      **/
     function display($tpl = null)
     {
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
 
-        $params = &$mainframe->getParams();
+        $params = $mainframe->getParams();
         $this->assignRef( 'params', $params );
 
         $category_name = JRequest::getVar( 'c', '' );
@@ -36,8 +36,8 @@ class WordbridgeViewCategory extends JView
         $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
         $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
-        $model = &$this->getModel();
-        $results =& $model->getCategoryPosts( $page, $category_name, $blogInfo['id'] );
+        $model = $this->getModel();
+        $results = $model->getCategoryPosts( $page, $category_name, $blogInfo['id'] );
         $this->assignRef( 'entries', $results->entries );
         $this->assignRef( 'isTag', $results->isTag );
 

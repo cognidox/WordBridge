@@ -21,7 +21,7 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'he
         <blockquote id="wordbridge_blog_<?php echo $blog->blog_name; ?>">
         <span class="wordbridge_updated"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_UPDATED', 
                 ( $blog->updated == null ? JText::_( 'COM_WORDBRIDGE_NEVER' ) :
-                    strftime( '%c', $blog->updated ) ) ); ?></span><br />
+                   JFactory::getDate( $blog->updated )->toFormat( '%c' ) ) ); ?></span><br />
         <span class="wordbridge_last_post"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_POST',
                     $this->escape( $blog->last_post ) ); ?></span><br />
         <span class="wordbridge_cached_pages"><?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_PAGES',
