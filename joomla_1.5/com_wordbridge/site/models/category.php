@@ -20,11 +20,11 @@ class WordbridgeModelCategory extends JModel
      * Gets the blog posts from wordpress for a specific category, 
      * and stores the blog posts locally
      */
-    function getCategoryPosts( $page, $category_name, $blog_id )
+    function getCategoryPosts( $page, $category_name, $blog_uuid )
     {
         // Load up the entries
         $results = $this->_loadEntriesFromWeb( $page, $category_name );
-        WordbridgeHelper::storeBlogEntries( $results->entries, $blog_id );
+        WordbridgeHelper::storeBlogEntries( $results->entries, $blog_uuid );
 
         return $results;
     }
@@ -51,8 +51,8 @@ class WordbridgeModelCategory extends JModel
                          WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $pageParam );
         
         $blogInfo = WordbridgeHelper::getBlogByName( $blogname );
-        if ( $blogInfo['id'] && 
-             WordbridgeHelper::isTag( $blogInfo['id'], $category_name ) )
+        if ( $blogInfo['uuid'] && 
+             WordbridgeHelper::isTag( $blogInfo['uuid'], $category_name ) )
         {
             $isTag = true;
             $url = $tagUrl;
@@ -61,9 +61,9 @@ class WordbridgeModelCategory extends JModel
         $results = WordbridgeHelper::getEntriesFromUrl( $url );
         if ( !$isTag && !count( $results ) && $page <= 1 )
         {
-            if ( $blogInfo['id'] )
+            if ( $blogInfo['uuid'] )
             {
-                WordbridgeHelper::addTag( $blogInfo['id'], $category_name );
+                WordbridgeHelper::addTag( $blogInfo['uuid'], $category_name );
             }
             $isTag = true;
             $results = WordbridgeHelper::getEntriesFromUrl( $tagUrl );
