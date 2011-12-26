@@ -121,7 +121,7 @@ class com_WordbridgeInstallerScript
         $installed_plugins = $dbo->loadResultArray();
         if ( is_array( $installed_plugins ) && count( $installed_plugins ) )
         {
-            $installer =& new JInstaller();
+            $installer = new JInstaller();
             foreach ( $installed_plugins as $plugin_id )
             {
                 $installer->uninstall( 'plugin', $plugin_id );

@@ -23,11 +23,17 @@ class WordbridgeViewCategory extends JView
      * Wordbridge category view display method
      * @return void
      **/
-    function display($tpl = null)
+    function display( $tpl = null )
     {
-        $mainframe = JFactory::getApplication();
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
+        $item = $menu->getActive();
+        if ( !$item )
+        {
+            $item = $menu->getItem( JRequest::getInt( 'Itemid' ) );
+        }
 
-        $params = $mainframe->getParams();
+        $params = $item->params;
         $this->assignRef( 'params', $params );
 
         $category_name = JRequest::getVar( 'c', '' );
@@ -41,9 +47,7 @@ class WordbridgeViewCategory extends JView
         $this->assignRef( 'entries', $results->entries );
         $this->assignRef( 'isTag', $results->isTag );
 
-        $app = JFactory::getApplication();
-        $menu = $app->getMenu();
-        $baseUrl = $menu->getActive()->link . '&Itemid=' . $menu->getActive()->id;
+        $baseUrl = $item->link . '&Itemid=' . $item->id;
         $this->assignRef( 'blogLink', $baseUrl );
 
         $viewable_name = trim( JRequest::getVar( 'name', '' ) );

@@ -25,9 +25,15 @@ class WordbridgeViewEntries extends JView
      **/
     function display($tpl = null)
     {
-        $mainframe = JFactory::getApplication();
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
+        $item = $menu->getActive();
+        if ( !$item )
+        {
+            $item = $menu->getItem( JRequest::getInt( 'Itemid' ) );
+        }
 
-        $params = $mainframe->getParams();
+        $params = $item->params;
         $this->assignRef( 'params', $params );
 
         $page = JRequest::getInt( 'page', 1 );
@@ -44,9 +50,7 @@ class WordbridgeViewEntries extends JView
             $page = $max_page;
         }
 
-        $app = JFactory::getApplication();
-        $menu = $app->getMenu();
-        $baseUrl = $menu->getActive()->link . '&Itemid=' . $menu->getActive()->id;
+        $baseUrl = $item->link . '&Itemid=' . $item->id;
         $this->assignRef( 'blogLink', $baseUrl );
         if ( $page < $max_page )
         {

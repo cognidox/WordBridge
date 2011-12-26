@@ -23,24 +23,27 @@ class WordbridgeViewEntry extends JView
      * Wordbridge entry view display method
      * @return void
      **/
-    function display($tpl = null)
+    function display( $tpl = null )
     {
-        $mainframe = JFactory::getApplication();
+        $app = JFactory::getApplication();
+        $menu = $app->getMenu();
+        $item = $menu->getActive();
+        if ( !$item )
+        {
+            $item = $menu->getItem( JRequest::getInt( 'Itemid' ) );
+        }
+        $params = $item->params;
 
-        $params = $mainframe->getParams();
         $this->assignRef( 'params', $params );
 
         $postid = JRequest::getInt( 'p', 0 );
-
         $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
         $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
         $model = $this->getModel();
         $entry = $model->getEntry( $postid, $blogInfo['uuid'] );
 
-        $app = JFactory::getApplication();
-        $menu = $app->getMenu();
-        $baseUrl = $menu->getActive()->link . '&Itemid=' . $menu->getActive()->id;
+        $baseUrl = $item->link . '&Itemid=' . $item->id;
         $this->assignRef( 'blogLink', $baseUrl );
 
         $this->assignRef( 'content', $entry['content'] );
