@@ -27,31 +27,57 @@ class com_WordbridgeInstallerScript
 {
     function update( $parent )
     {
-        $this->install( $parent );
-        // Alter the cache table if need be to add the cache time column
+        $manifest = $parent->get( 'manifest' );
+        // If a version prior to 0.5 has been installed, the database
+        // tables will not have the UUID fields set, so the tables must
+        // be rebuit
+        $hasUUID = false;
         $db = JFactory::getDbo();
-        $fields = $db->getTableFields( '#__com_wordbridge_cache' );
-        if ( ! array_key_exists ( 'update_time', $fields['#__com_wordbridge_cache'] ) )
+        $blogFields = $db->getTableFields( '#__com_wordbridge_blogs' );
+        foreach ( $blogFields[ '#__com_wordbridge_blogs' ] as $fieldname => $fieldtype )
         {
-            // Add the update_time column
-            $alterSql = sprintf( 'ALTER TABLE #__com_wordbridge_cache ADD COLUMN %s TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $db->nameQuote( 'update_time' ) );
-            $db->setQuery( $alterSql );
-            $db->query();
+            if ( $fieldname == 'blog_uuid' )
+            {
+                $hasUUID = true;
+                break;
+            }
         }
+        if ( !$hasUUID )
+        {
+            // All the database tables need to be rebuilt at this 
+            // point
+            $sql = file_get_contents( dirname(__FILE__) . DS . 'admin' . DS . $manifest->install->sql->file );
+            jimport( 'joomla.installer.helper' );
+            $queries = JInstallerHelper::splitSql( $sql );
+            if ( count( $queries ) > 0 )
+            {
+                foreach ( $queries as $query )
+                {
+                    $query = trim( $query );
+                    if ( $query != '' && $query{0} != '#' )
+                    {
+                        $db->setQuery( $query );
+                        $db->query();
+                    }
+                }
+            }
+            echo '<p>' . JText::sprintf( 'COM_WORDBRIDGE_UPDATED_DB' ) . '</p>';
+        }
+        echo '<p>' . JText::sprintf( 'COM_WORDBRIDGE_UPDATED_TO_VER', htmlspecialchars( $manifest->version->data() ) ) . '</p>';
     }
 
-    function install($parent) 
+    function install( $parent )
     {
-        $manifest = $parent->get("manifest");
+        $manifest = $parent->get( 'manifest' );
         $parent2 = $parent->getParent();
-        $source = $parent2->getPath("source");
+        $source = $parent2->getPath( 'source' );
         $lang   = JFactory::getLanguage();
-        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false);
+        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false );
 
         $installer = new JInstaller();
         $plugin_names = array();
         // Install plugins
-        foreach ($manifest->plugins->plugin as $plugin)
+        foreach ( $manifest->plugins->plugin as $plugin )
         {
             $attributes = $plugin->attributes();
             $plg = $source . DS . $attributes['folder'] . DS . $attributes['plugin'];
@@ -107,23 +133,23 @@ class com_WordbridgeInstallerScript
 
     function preflight($type, $parent) 
     {
-        $manifest = $parent->get("manifest");
+        $manifest = $parent->get( 'manifest' );
         $parent2 = $parent->getParent();
-        $source = $parent2->getPath("source");
+        $source = $parent2->getPath( 'source' );
         $lang   = JFactory::getLanguage();
-        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false);
+        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false );
 
         // Make sure JSON is installed
         if ( $type == 'install' )
         {
             if ( !function_exists( 'curl_init' ) )
             {
-                echo '<p>' . JText::_( 'COM_WORDBRIDGE_NO_CURL' ) . '</p>';
+                Jerror::raiseWarning( null, JText::_( 'COM_WORDBRIDGE_NO_CURL'  ) );
                 return false;
             }
             if ( !class_exists( 'DOMDocument' ) )
             {
-                echo '<p>' . JText::_( 'COM_WORDBRIDGE_NO_DOM' ) . '</p>';
+                Jerror::raiseWarning( null, JText::_( 'COM_WORDBRIDGE_NO_DOM' ) );
                 return false;
             }
         }

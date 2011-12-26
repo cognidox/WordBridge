@@ -44,31 +44,33 @@ class WordbridgeModelWordbridge extends JModel
         {
             $item = (object) array(
                         'blog_id' => '',
+                        'blog_uuid' => '',
                         'blog_name' => $blog,
                         'description' => '',
                         'last_post' => '',
                         'updated' => null
                         );
-            $query = 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = ' . $db->quote( $blog, true );
+            $query = 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = ' . $db->quote( $blog, true );
             $db->setQuery( $query );
             $row = $db->loadRow();
             if ( $row )
             {
                 $item->blog_id = $row[0];
-                $item->blog_name = $row[1];
-                $item->description = $row[2];
-                $item->last_post = $row[3];
-                $item->updated = $row[4];
+                $item->blog_uuid = $row[1];
+                $item->blog_name = $row[2];
+                $item->description = $row[3];
+                $item->last_post = $row[4];
+                $item->updated = $row[5];
             }
 
             // Look up the number of posts that are cached for this
             // blog
-            $post_query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_posts WHERE blog_id = %d', $item->blog_id );
+            $post_query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_posts WHERE blog_uuid = %s', $db->quote( $item->blog_uuid, true ) );
             $db->setQuery( $post_query );
             $item->post_count = $db->loadResult();
 
             // Look up the number of pages cached for this blog
-            $page_query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_cache WHERE blog_id = %d', $item->blog_id );
+            $page_query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_cache WHERE blog_uuid = %s', $db->quote( $item->blog_uuid, true ) );
             $db->setQuery( $page_query );
             $item->page_count = $db->loadResult();
 

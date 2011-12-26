@@ -38,12 +38,12 @@ class WordbridgeModelEntries extends JModel
             $cacheTime = 0;
         }
         $expiredTime = time() - $cacheTime;
-        $clearSql = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_id = %d AND UNIX_TIMESTAMP(%s) < %d', $blogInfo['id'], $db->nameQuote( 'update_time' ), $expiredTime );
+        $clearSql = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND UNIX_TIMESTAMP(%s) < %d', $db->quote( $blogInfo['uuid'], true ), $db->nameQuote( 'update_time' ), $expiredTime );
         $db->setQuery( $clearSql );
         $db->query();
 
-        $query = sprintf( 'SELECT id FROM #__com_wordbridge_cache WHERE blog_id = %d AND statuses_count = %d AND last_post_id = %d AND page_num = %d',
-                    $blogInfo['id'], $blogInfo['count'], 
+        $query = sprintf( 'SELECT id FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND statuses_count = %d AND last_post_id = %d AND page_num = %d',
+                    $db->quote( $blogInfo['uuid'], true ), $blogInfo['count'], 
                     $blogInfo['last_post_id'], $page );
         $db->setQuery( $query );
         $cache_id = $db->loadResult();
@@ -73,7 +73,7 @@ class WordbridgeModelEntries extends JModel
         // First, clean the cache, by looking up all the current
         // cached entries, removing the page entries, then deleting
         // the main cache mapping
-        $id_query = sprintf( 'SELECT DISTINCT id FROM #__com_wordbridge_cache WHERE blog_id = %d AND page_num = %d', $blogInfo['id'], $page );
+        $id_query = sprintf( 'SELECT DISTINCT id FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND page_num = %d', $db->quote( $blogInfo['uuid'], true ), $page );
         $db->setQuery( $id_query );
         $id_rows = $db->loadRowList();
         if ( count( $id_rows ) )
@@ -87,7 +87,7 @@ class WordbridgeModelEntries extends JModel
             $db->setQuery( $del_cache_query );
             $db->query();
         }
-        $del_query = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_id = %d AND page_num = %d', $blogInfo['id'], $page );
+        $del_query = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND page_num = %d', $db->quote( $blogInfo['uuid'], true ), $page );
         $db->setQuery( $del_query );
         $db->query();
 
@@ -95,15 +95,15 @@ class WordbridgeModelEntries extends JModel
         $this->_loadEntriesFromWeb( $page );
 
         // Create a cache map for this result set
-        $add_query = sprintf( 'INSERT INTO #__com_wordbridge_cache (blog_id, statuses_count, last_post_id, page_num) VALUES (%d, %d, %d, %d)',
-                              $blogInfo['id'], $blogInfo['count'],
+        $add_query = sprintf( 'INSERT INTO #__com_wordbridge_cache (blog_uuid, statuses_count, last_post_id, page_num) VALUES (%s, %d, %d, %d)',
+                              $db->quote( $blogInfo['uuid'], true ), $blogInfo['count'],
                               $blogInfo['last_post_id'], $page );
         $db->setQuery( $add_query );
         $db->query();
 
         // Grab the newly created cache map, and create page entries
-        $query = sprintf( 'SELECT id FROM #__com_wordbridge_cache WHERE blog_id = %d AND statuses_count = %d AND last_post_id = %d AND page_num = %d',
-                          $blogInfo['id'], $blogInfo['count'], 
+        $query = sprintf( 'SELECT id FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND statuses_count = %d AND last_post_id = %d AND page_num = %d',
+                          $db->quote( $blogInfo['uuid'], true ), $blogInfo['count'], 
                           $blogInfo['last_post_id'], $page );
         $db->setQuery( $query );
         $cache_id = $db->loadResult();
@@ -111,7 +111,7 @@ class WordbridgeModelEntries extends JModel
         {
             $post_order = 1;
 
-            WordbridgeHelper::storeBlogEntries( $this->_entries, $blogInfo['id'] );
+            WordbridgeHelper::storeBlogEntries( $this->_entries, $blogInfo['uuid'] );
             foreach ( $this->_entries as $entry )
             {
                 // Update the locally cached page mapping
@@ -145,7 +145,7 @@ class WordbridgeModelEntries extends JModel
     {
         $this->_entries = array();
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT p.post_id, p.title, p.content, UNIX_TIMESTAMP(p.post_date), p.slug FROM #__com_wordbridge_pages AS pages LEFT JOIN #__com_wordbridge_posts AS p ON pages.post_id = p.post_id WHERE pages.cache_id = %d ORDER BY pages.post_order ASC', $cache_id );
+        $query = sprintf( 'SELECT p.post_id, p.title, p.content, UNIX_TIMESTAMP(p.post_date), p.slug, p.blog_uuid FROM #__com_wordbridge_pages AS pages LEFT JOIN #__com_wordbridge_posts AS p ON pages.post_id = p.post_id WHERE pages.cache_id = %d ORDER BY pages.post_order ASC', $cache_id );
         $db->setQuery( $query );
         $rows = $db->loadRowList();
         foreach ( $rows as $row )
@@ -158,7 +158,7 @@ class WordbridgeModelEntries extends JModel
             $entry['slug'] = $row[4];
             $entry['categories'] = array();
 
-            $cat_query = 'SELECT category FROM #__com_wordbridge_post_categories WHERE post_id = ' . $entry['postid'];
+            $cat_query = sprintf( 'SELECT DISTINCT category FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry['postid'], $db->quote( $row[5], true ) );
             $db->setQuery( $cat_query );
             $cat_rows = $db->loadRowList();
             foreach ( $cat_rows as $cat )

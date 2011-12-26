@@ -16,10 +16,10 @@ class WordbridgeModelEntry extends JModel
     /**
      * We should load entries off the DB
      */
-    function getEntry( $postid, $blogid )
+    function getEntry( $postid, $blog_uuid )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT post_id, title, content, UNIX_TIMESTAMP(post_date), slug FROM #__com_wordbridge_posts WHERE post_id = %d AND blog_id = %d', $postid, $blogid );
+        $query = sprintf( 'SELECT post_id, title, content, UNIX_TIMESTAMP(post_date), slug FROM #__com_wordbridge_posts WHERE post_id = %d AND blog_uuid = %s', $postid, $db->quote( $blog_uuid, true ) );
         $db->setQuery( $query );
         $entry = $db->loadRow();
         if ( !$entry )
@@ -33,7 +33,7 @@ class WordbridgeModelEntry extends JModel
         $result['date'] = $entry[3];
         $result['slug'] = $entry[4];
         $result['categories'] = array();
-        $cat_query = 'SELECT DISTINCT category from #__com_wordbridge_post_categories WHERE post_id = ' . $entry[0];
+        $cat_query = sprintf( 'SELECT DISTINCT category from #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry[0], $db->quote( $blog_uuid, true ) );
         $db->setQuery( $cat_query );
         $categories = $db->loadRowList();
         foreach ( $categories as $cat )

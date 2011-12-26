@@ -36,7 +36,7 @@ class WordbridgeViewEntry extends JView
         $this->assignRef( 'blogTitle', $blogInfo['description'] );
 
         $model = $this->getModel();
-        $entry = $model->getEntry( $postid, $blogInfo['id'] );
+        $entry = $model->getEntry( $postid, $blogInfo['uuid'] );
 
         $app = JFactory::getApplication();
         $menu = $app->getMenu();

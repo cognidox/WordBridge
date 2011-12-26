@@ -1,9 +1,10 @@
 WordBridge - WordPress.com to Joomla Bridge
 ===========================================
 
-This is WordBridge, Cognidox Ltd's WordPress.com to Joomla bridge. 
-It can be used to connect a Joomla site with a wordpress.com hosted blog.
-Once a blog is linked via a Joomla menu item, updates to the wordpress.com 
+This is WordBridge, Cognidox Ltd's WordPress to Joomla bridge. 
+It can be used to connect a Joomla site with either with a Wordpress.com 
+hosted blog or a blog on a self-hoster WordPress installation.
+Once a blog is linked via a Joomla menu item, updates to the WordPress 
 blog will automatically appear on the Joomla site.
 
 This component is distributed under the GNU Affero General Public License v3:
@@ -45,7 +46,9 @@ below:
 4) In the menu item's WordBridge Settings, set the Wordpress blog name
    to the name of your WordPress.com blog. e.g. if the blog is available
    at http://example.wordpress.com/, then the blog name to enter is
-   'example'.
+   'example'. If the blog is self-hosted, enter the fully qualified
+   hostname of the blog. e.g. if the blog is http://myblog.example.com/, the
+   blog name to enter is 'myblog.example.com'.
 5) Save the menu item entry. The blog will now appear in Joomla. New 
    entries posted to the wordpress.com site will automatically appear
    in the Joomla site.

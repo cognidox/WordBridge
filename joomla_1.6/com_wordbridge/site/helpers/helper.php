@@ -23,6 +23,7 @@ class WordbridgeHelper {
                        'updated' => 0,
                        'last_post' => '',
                        'name' => '',
+                       'uuid' => '',
                        'id' => '' );
 
         if ( $blogname == null )
@@ -40,6 +41,14 @@ class WordbridgeHelper {
         if ( $stored_blog && $useStored )
         {
             return $stored_blog;
+        }
+        if ( $stored_blog )
+        {
+            $info['uuid'] = $stored_blog['uuid'];
+        }
+        else
+        {
+            $info['uuid'] = uniqid();
         }
 
         // Only use the twitter API for blogs hosted at wordpress.com
@@ -101,13 +110,13 @@ class WordbridgeHelper {
                      $stored_blog['name'] != $blogname ||
                      $stored_blog['last_post'] != $info['last_post'] )
                 {
-                    WordbridgeHelper::storeBlog( $info['id'], $blogname, $info['description'], $info['last_post'] );
+                    WordbridgeHelper::storeBlog( $info['id'], $info['uuid'], $blogname, $info['description'], $info['last_post'] );
                 }
             }
             else
             {
                 // Store the blog data locally
-                WordbridgeHelper::storeBlog( $info['id'], $blogname, $info['description'], $info['last_post'] );
+                WordbridgeHelper::storeBlog( $info['id'], $info['uuid'], $blogname, $info['description'], $info['last_post'] );
             }
         }
         return $info;
@@ -119,10 +128,10 @@ class WordbridgeHelper {
      * Look up the locally stored blog details
      * @return array containing id and description if found, or null if not
      */
-    function getBlogByID( $id )
+    function getBlogByID( $uuid )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_id = %d', (int)$id );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_uuid = %s', $db->quote( $uuid, true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -130,10 +139,11 @@ class WordbridgeHelper {
             return null;
         }
         return array( 'id' => $blog[0], 
-                      'name' => $blog[1],
-                      'description' => $blog[2],
-                      'last_post' => $blog[3],
-                      'updated' => $blog[4] );
+                      'uuid' => $blog[1],
+                      'name' => $blog[2],
+                      'description' => $blog[3],
+                      'last_post' => $blog[4],
+                      'updated' => $blog[5] );
     }
 
     /**
@@ -144,7 +154,7 @@ class WordbridgeHelper {
     public static function getBlogByName( $name )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->quote( $name, true ) );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->quote( $name, true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -152,20 +162,21 @@ class WordbridgeHelper {
             return null;
         }
         return array( 'id' => $blog[0], 
-                      'name' => $blog[1],
-                      'description' => $blog[2],
-                      'last_post' => $blog[3],
-                      'updated' => $blog[4] );
+                      'uuid' => $blog[1],
+                      'name' => $blog[2],
+                      'description' => $blog[3],
+                      'last_post' => $blog[4],
+                      'updated' => $blog[5] );
     }
 
     /**
      * storeBlog
      * Store the ID, name and description of a blog
      */
-    function storeBlog( $id, $name, $description, $last_post )
+    function storeBlog( $id, $uuid, $name, $description, $last_post )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, NOW())', (int)$id, $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->quote( $uuid, true ), $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -180,7 +191,7 @@ class WordbridgeHelper {
         return $name;
     }
 
-    public static function storeBlogEntries( $entries, $blog_id )
+    public static function storeBlogEntries( $entries, $blog_uuid )
     {
         if ( $entries == null )
         {
@@ -191,9 +202,9 @@ class WordbridgeHelper {
         {
             // Update the locally cached post
             $post_query = sprintf( 
-                'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %d, %s, %s, %s, %s)', 
+                'REPLACE INTO #__com_wordbridge_posts VALUES (%d, %s, %s, %s, %s, %s)', 
                 $entry['postid'],
-                $blog_id,
+                $db->quote( $blog_uuid, true ),
                 $db->quote( $entry['title'], true ),
                 $db->quote( $entry['content'], true ),
                 $db->quote( JFactory::getDate( $entry['date'] )->toFormat( '%F %T %Z' ), true ),
@@ -202,14 +213,14 @@ class WordbridgeHelper {
             $db->query();
 
             // Update the post category settings
-            $db->setQuery( sprintf( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_id = %d', $entry['postid'], $blog_id ) );
+            $db->setQuery( sprintf( 'DELETE FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry['postid'], $db->quote( $blog_uuid, true ) ) );
             $db->query();
             if ( count( $entry['categories'] ) )
             {
                 foreach ( $entry['categories'] as $category )
                 {
                     $db->setQuery( 
-                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %d, %s)', $entry['postid'], $blog_id, $db->quote( $category, true ) ) );
+                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %s, %s)', $entry['postid'], $db->quote( $blog_uuid, true ), $db->quote( $category, true ) ) );
                     $db->query();
                 }
             }
@@ -328,10 +339,10 @@ class WordbridgeHelper {
      * addTag
      * Store something as a tag
      */
-    public static function addTag( $blog_id, $name )
+    public static function addTag( $blog_uuid, $name )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_tags VALUES (%s, %s)', $db->quote( $blog_uuid, true ), $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -340,10 +351,10 @@ class WordbridgeHelper {
      * addCategory
      * Store something as a category
      */
-    function addCategory( $blog_id, $name )
+    function addCategory( $blog_uuid, $name )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%d, %s)', $blog_id, $db->quote( $name, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%s, %s)', $db->quote( $blog_uuid, true ), $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
     }
@@ -353,10 +364,10 @@ class WordbridgeHelper {
      * Determine if something is a tag
      * @return boolean
      */
-    public static function isTag( $blog_id, $name )
+    public static function isTag( $blog_uuid, $name )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_id = %d AND tag = %s', $blog_id, $db->quote( $name, true ) );
+        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_tags WHERE blog_uuid = %s AND tag = %s', $db->quote( $blog_uuid, true ), $db->quote( $name, true ) );
         $db->setQuery( $query );
         $tagCount = $db->loadResult();
         if ( $tagCount )
