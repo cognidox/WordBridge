@@ -48,7 +48,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                     if ( preg_match( '/^(.+)<span\s+id="more-(\d+)"><\/span>.*/is', $blogContent, $matches ) )
                     {
                         $blogContent = $matches[1];
-                        $blogContent .= sprintf( '<br /><a href="%s#more-%s">%s</a>', 
+                        $blogContent .= sprintf( '<a href="%s#more-%s">%s</a>', 
                                                  JRoute::_( $this->blogLink . '&p=' . $entry['postid'] .
                                                             '&slug=' . $entry['slug'] . '&view=entry' ),
                                                  $matches[2], JText::_( 'COM_WORDBRIDGE_READ_THE_REST' ) );

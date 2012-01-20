@@ -59,8 +59,8 @@ class WordbridgeModelWordbridge extends JModel
                 $item->blog_uuid = $row[1];
                 $item->blog_name = $row[2];
                 $item->description = $row[3];
-                $item->last_post = $row[5];
-                $item->updated = $row[4];
+                $item->last_post = $row[4];
+                $item->updated = $row[5];
             }
 
             // Look up the number of posts that are cached for this

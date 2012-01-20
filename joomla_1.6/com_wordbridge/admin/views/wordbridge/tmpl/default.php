@@ -22,8 +22,20 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'he
         <span class="wordbridge_updated"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_UPDATED', 
                 ( $blog->updated == null ? JText::_( 'COM_WORDBRIDGE_NEVER' ) :
                    JFactory::getDate( $blog->updated )->toFormat( '%c' ) ) ); ?></span><br />
+        <?php
+        // Truncate the last post value, so it doesn't swamp the page
+        $last_post = '';
+        if ( strlen( $blog->last_post ) > 51 )
+        {
+            $last_post = $this->escape( substr( $blog->last_post, 0, 50 ) ) . '&#0133;';
+        }
+        else
+        {
+            $last_post = $this->escape( $blog->last_post );
+        }
+        ?>
         <span class="wordbridge_last_post"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_POST',
-                    $this->escape( $blog->last_post ) ); ?></span><br />
+                    $last_post ); ?></span><br />
         <span class="wordbridge_cached_pages"><?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_PAGES',
                     $blog->page_count  ); ?></span><br />
         <span class="wordbridge_cached_posts"><?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_POSTS',
