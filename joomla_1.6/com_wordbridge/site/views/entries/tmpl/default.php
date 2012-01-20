@@ -36,22 +36,25 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                 <span class="wordbridge_date"><?php echo JFactory::getDate( $entry['date'] )->toFormat( '%B %e, %Y', true ); ?></span>
                 <div class="wordbridge_content">
                 <?php 
+                    $blogContent = $entry['content'];
                     if ( $this->params->get( 'wordbridge_show_links' ) == 'no' )
                     {
                         $br_pos = strrpos( $entry['content'], '<br />' );
                         if ( $br_pos > 0 )
                         {
-                            echo substr( $entry['content'], 0, $br_pos );
-                        }
-                        else
-                        {
-                            echo $entry['content'];
+                            $blogContent = substr( $entry['content'], 0, $br_pos );
                         }
                     }
-                    else
+                    // Look for more-link
+                    if ( preg_match( '/^(.+)<span\s+id="more-(\d+)"><\/span>.*/is', $blogContent, $matches ) )
                     {
-                        echo $entry['content']; 
+                        $blogContent = $matches[1];
+                        $blogContent .= sprintf( '<br /><a href="%s#more-%s">%s</a>',
+                                                 JRoute::_( $this->blogLink . '&p=' . $entry['postid'] .
+                                                            '&slug=' . $entry['slug'] . '&view=entry' ),
+                                                 $matches[2], JText::_( 'COM_WORDBRIDGE_READ_THE_REST' ) );
                     }
+                    echo $blogContent;
                 ?>
                 </div>
 

@@ -132,7 +132,7 @@ class WordbridgeHelper {
     function getBlogByID( $uuid )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_uuid = %s', $db->Quote( $uuid ) );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_uuid = %s LIMIT 1', $db->Quote( $uuid ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -155,7 +155,7 @@ class WordbridgeHelper {
     function getBlogByName( $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s', $db->Quote( $name, true ) );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s LIMIT 1', $db->Quote( $name, true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
