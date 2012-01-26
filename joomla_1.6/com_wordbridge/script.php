@@ -25,16 +25,22 @@ defined('_JEXEC') or die('Restricted access');
  */
 class com_WordbridgeInstallerScript
 {
+    var $component_base = 'com_wordbridge';
+
     function update( $parent )
     {
         $manifest = $parent->get( 'manifest' );
+        $parent2 = $parent->getParent();
+        $source = $parent2->getPath( 'source' );
+        $this->_installPlugins( $manifest, $source, true );
+
         // If a version prior to 0.5 has been installed, the database
         // tables will not have the UUID fields set, so the tables must
         // be rebuit
         $hasUUID = false;
         $db = JFactory::getDbo();
-        $blogFields = $db->getTableFields( '#__com_wordbridge_blogs' );
-        foreach ( $blogFields[ '#__com_wordbridge_blogs' ] as $fieldname => $fieldtype )
+        $blogFields = $db->getTableFields( '#__' . $this->component_base . '_blogs' );
+        foreach ( $blogFields[ '#__' . $this->component_base . '_blogs' ] as $fieldname => $fieldtype )
         {
             if ( $fieldname == 'blog_uuid' )
             {
@@ -71,28 +77,17 @@ class com_WordbridgeInstallerScript
         $manifest = $parent->get( 'manifest' );
         $parent2 = $parent->getParent();
         $source = $parent2->getPath( 'source' );
+        $plugin_names = $this->_installPlugins( $manifest, $source );
         $lang   = JFactory::getLanguage();
-        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false );
+        $lang->load( $this->component_base.'.sys', $source.DS.'admin', $lang->getDefault(), false, false );
 
-        $installer = new JInstaller();
-        $plugin_names = array();
-        // Install plugins
-        foreach ( $manifest->plugins->plugin as $plugin )
-        {
-            $attributes = $plugin->attributes();
-            $plg = $source . DS . $attributes['folder'] . DS . $attributes['plugin'];
-            $installer->install($plg);
-            $plugin_names[] = $attributes['plugin'];
-        }
-
-        //
         $db = JFactory::getDbo();
-        $tableExtensions = $db->nameQuote( "#__extensions" );
-        $columnElement   = $db->nameQuote( "element" );
-        $columnType      = $db->nameQuote( "type" );
-        $columnEnabled   = $db->nameQuote( "enabled" );
+        $tableExtensions = $db->nameQuote( '#__extensions' );
+        $columnElement   = $db->nameQuote( 'element' );
+        $columnType      = $db->nameQuote( 'type' );
+        $columnEnabled   = $db->nameQuote( 'enabled' );
 
-        foreach ($plugin_names as $plugin)
+        foreach ( $plugin_names as $plugin )
         {
             $db->setQuery(
                 "UPDATE $tableExtensions SET $columnEnabled=1 WHERE 
@@ -102,12 +97,19 @@ class com_WordbridgeInstallerScript
         echo JText::_( 'COM_WORDBRIDGE_INSTALLED' );
     }
 
-    function uninstall($parent) 
+    function uninstall( $parent ) 
     {
-        $plugins = array(
-                    array( 'search', 'wordbridge' ),
-                    );
+        $plugins = array();
 
+        $xml = simplexml_load_file( JPATH_COMPONENT_ADMINISTRATOR.DS.'..'.DS.$this->component_base.DS.substr( $this->component_base, 4 ).'.xml' );
+        if ( $xml )
+        {
+            foreach ( $xml->xpath('/extension/plugins/plugin') as $plugin )
+            {
+                $attributes = $plugin->attributes();
+                $plugins[] = array( ''.$attributes->group, ''.$attributes->plugin );
+            }
+        }
         $where = array();
         foreach ( $plugins as $plugin )
         {
@@ -131,13 +133,13 @@ class com_WordbridgeInstallerScript
         echo '<p>' . JText::_( 'COM_WORDBRIDGE_UNINSTALL_TEXT' ) . '</p>';
     }
 
-    function preflight($type, $parent) 
+    function preflight( $type, $parent ) 
     {
         $manifest = $parent->get( 'manifest' );
         $parent2 = $parent->getParent();
         $source = $parent2->getPath( 'source' );
         $lang   = JFactory::getLanguage();
-        $lang->load( 'com_wordbridge.sys', $source.DS.'admin', $lang->getDefault(), false, false );
+        $lang->load( $this->component_base.'.sys', $source.DS.'admin', $lang->getDefault(), false, false );
 
         // Make sure JSON is installed
         if ( $type == 'install' )
@@ -153,5 +155,27 @@ class com_WordbridgeInstallerScript
                 return false;
             }
         }
+    }
+
+    function _installPlugins( $manifest, $source, $upgrade = false )
+    {
+        $installer = new JInstaller();
+        $plugin_names = array();
+        // Install plugins
+        foreach ( $manifest->plugins->plugin as $plugin )
+        {
+            $attributes = $plugin->attributes();
+            $plg = $source . DS . $attributes['folder'] . DS . $attributes['plugin'];
+            if ( $upgrade )
+            {
+                $installer->update( $plg );
+            }
+            else
+            {
+                $installer->install( $plg );
+            }
+            $plugin_names[] = $attributes['plugin'];
+        }
+        return $plugin_names;
     }
 }
