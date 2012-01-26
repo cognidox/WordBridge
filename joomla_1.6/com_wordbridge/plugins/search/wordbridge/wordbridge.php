@@ -23,20 +23,11 @@ class plgSearchWordbridge extends JPlugin
 
     function onContentSearchAreas()
     {
-        return $this->onSearchAreas();
-    }
-
-    function onContentSearch( $text, $phrase = '', $ordering = '', $areas = null )
-    {
-        return $this->onSearch( $text, $phrase = '', $ordering = '', $areas = null );
-    }
-
-    function onSearchAreas() {
         static $areas = array( 'wordbridge' => 'PLG_SEARCH_WORDBRIDGE_AREA' );
         return $areas;
     }
 
-    function onSearch( $text, $phrase = '', $ordering = '', $areas = null )
+    function onContentSearch( $text, $phrase = '', $ordering = '', $areas = null )
     {
         // Need to look up all the menu items that are linked to blogs
         $results = array();
@@ -47,8 +38,10 @@ class plgSearchWordbridge extends JPlugin
             return $results;
         }
 
-        if (is_array( $areas )) {
-            if (!array_intersect( $areas, array_keys( $this->onSearchAreas() ) )) {
+        if ( is_array( $areas ) )
+        {
+            if ( count( array_intersect( $areas, array_keys( $this->onContentSearchAreas() ) ) ) == 0 )
+            {
                 return array();
             }
         }
