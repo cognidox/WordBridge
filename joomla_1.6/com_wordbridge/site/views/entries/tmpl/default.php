@@ -46,13 +46,20 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                         }
                     }
                     // Look for more-link
-                    if ( preg_match( '/^(.+?)<span\s+id="more-(\d+)"><\/span>.*/is', $blogContent, $matches ) )
+                    if ( preg_match( '/^(.+?)<span\s+id="more-(\d+)"><\/span>(.*)/is', $blogContent, $matches ) )
                     {
                         $blogContent = $matches[1];
-                        $blogContent .= sprintf( '<a href="%s#more-%s">%s</a></p>',
+                        $blogContent .= sprintf( '<a href="%s#more-%s">%s</a>',
                                                  JRoute::_( $this->blogLink . '&p=' . $entry['postid'] .
                                                             '&slug=' . $entry['slug'] . '&view=entry' ),
                                                  $matches[2], JText::_( 'COM_WORDBRIDGE_READ_THE_REST' ) );
+                        // Care needs to be taken to allow closing tags from 
+                        // earler in the content to close.
+                        // Strip closed para and div pairs, and closing tags
+                        // should be left
+                        $extra = preg_replace( '/<p(\s[^>]*)?>.+?<\/p\s*>/is', '', $matches[3] );
+                        $extra = preg_replace( '/<div(\s[^>]*)?>.+?<\/div\s*>/is', '', $extra );
+                        $blogContent .= $extra;
                     }
                     echo $blogContent;
                 ?>
