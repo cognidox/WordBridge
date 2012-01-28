@@ -55,11 +55,49 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                                                  $matches[2], JText::_( 'COM_WORDBRIDGE_READ_THE_REST' ) );
                         // Care needs to be taken to allow closing tags from 
                         // earler in the content to close.
-                        // Strip closed para and div pairs, and closing tags
-                        // should be left
-                        $extra = preg_replace( '/<p(\s[^>]*)?>.+?<\/p\s*>/is', '', $matches[3] );
-                        $extra = preg_replace( '/<div(\s[^>]*)?>.+?<\/div\s*>/is', '', $extra );
-                        $blogContent .= $extra;
+                        // Strip closed block elements, which should just
+                        // leave closing elements
+                        $parts = preg_split( '/(<[^>]+>)/s', $matches[3], -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE );
+                        $extra = '';
+                        $last_tag = false;
+                        foreach ( $parts as $part )
+                        {
+                            // Skip non HTML things
+                            if ( strpos( $part, '<' ) !== 0 )
+                            {
+                                continue;
+                            }
+                            if ( strpos( $part, '/' ) === 1 )
+                            {
+                                // This is a closing tag. If last_tag is
+                                // set we'll skip it if its not matching 
+                                // last tag. If it does match, unset last_tag
+                                // and skip
+                                if ( $last_tag )
+                                {
+                                    if ( preg_match( '/<\/' . preg_quote( $last_tag ) . '\s*/', $part ) )
+                                    {
+                                        $last_tag = false;
+                                    }
+                                    continue;
+                                }
+                            }
+                            else if ( $last_tag )
+                            {
+                                // we already have an open tag, so we
+                                // can skip any openers
+                                continue;
+                            }
+                            else
+                            {
+                                // Opening html element set last_tag
+                                // and skip
+                                if ( preg_match( '/<([A-Za-z]+)/', $part, $matches ) )
+                                    $last_tag = $matches[1];
+                                continue;
+                            }
+                            $blogContent .= $part;
+                        }
                     }
                     echo $blogContent;
                 ?>
