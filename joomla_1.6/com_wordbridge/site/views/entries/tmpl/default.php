@@ -72,7 +72,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                                 continue;
                             // Skip elements that should be self closed,
                             // but are often not
-                            if ( preg_match( '/^<hr|br|img/', $part ) )
+                            if ( preg_match( '/^<(hr|br|img|input|meta|link|basefont|base|area|col|frame|param)(\s|>)/is', $part ) )
                                 continue;
 
                             preg_match( '/^<\/?(\w+)/', $part, $pmatch );
