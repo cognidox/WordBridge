@@ -18,16 +18,16 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                             JRoute::_( $this->blogLink ),
                             $this->escape($this->params->get( 'page_title' ) ) ); ?>
         </div>
-    <?php endif; ?>
-    <?php if ( !empty( $this->blogTitle ) ): ?>
-        <?php echo $this->escape( $this->blogTitle ); ?>
+        <?php if ( !empty( $this->blogTitle ) ): ?>
+            <?php echo $this->escape( $this->blogTitle ); ?>
+        <?php endif; ?>
     <?php endif; ?>
     </div>
     <div class="wordbridge_entry">
         <h2 class="wordbridge_title contentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
             <?php echo $this->escape( $this->title ); ?>
         </h2>
-        <span class="wordbridge_date"><?php echo JFactory::getDate( $this->date )->toFormat( '%B %e, %Y', true ); ?></span>
+        <span class="wordbridge_date"><?php echo WordbridgeHelper::wordBridgeStrftime( '%B %e, %Y', $this->date, true ); ?></span>
         <div class="wordbridge_content">
         <?php 
             if ( $this->params->get( 'wordbridge_show_links' ) == 'no' )

@@ -3,7 +3,7 @@ WordBridge - WordPress.com to Joomla Bridge
 
 This is WordBridge, Cognidox Ltd's WordPress to Joomla bridge. 
 It can be used to connect a Joomla site with either with a Wordpress.com 
-hosted blog or a blog on a self-hoster WordPress installation.
+hosted blog or a blog on a self-hosted WordPress installation.
 Once a blog is linked via a Joomla menu item, updates to the WordPress 
 blog will automatically appear on the Joomla site.
 
@@ -13,7 +13,7 @@ http://www.opensource.org/licenses/agpl-v3.html
 This repository holds:
 
     joomla_1.5/com_wordbridge - Joomla 1.5 component and plugin sources
-    joomla_1.6/com_wordbridge - Joomla 1.6 component and plugin sources
+    joomla_1.6/com_wordbridge - Joomla 1.6/1.7/2.5 component and plugin sources
 
 Installation packages for the Joomla components are provided in the Files 
 section of the GitHub repository.
@@ -52,4 +52,13 @@ below:
 5) Save the menu item entry. The blog will now appear in Joomla. New 
    entries posted to the wordpress.com site will automatically appear
    in the Joomla site.
+
+
+Credits
+-------
+
+Thanks to the following people who have contributed to the
+development of this component:
+
+ * RaviOnline - Ravi.co.in
 

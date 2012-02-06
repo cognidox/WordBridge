@@ -204,7 +204,7 @@ class WordbridgeHelper {
                 $db->Quote( $blog_uuid, true ),
                 $db->Quote( $entry['title'], true ),
                 $db->Quote( $entry['content'], true ),
-                $db->Quote( strftime( '%F %T %Z', $entry['date'] ), true),
+                $db->Quote( WordbridgeHelper::wordBridgeStrftime( '%F %T %Z', $entry['date'] ), true),
                 $db->Quote( $entry['slug'], true ) );
             $db->setQuery( $post_query );
             $db->query();
@@ -430,6 +430,31 @@ class WordbridgeHelper {
             return sprintf( '%s.wordpress.com', $name );
         }
         return $name;
+    }
+
+    /**
+     * wordBridgeStrftime
+     * Returns cross platform date formatting
+     */
+    function wordBridgeStrftime( $format, $time = null, $local = false )
+    {
+        if ( strtoupper( substr( PHP_OS, 0, 3 ) ) == 'WIN' )
+        {
+            $mapping = array(
+                '%n' => '\n',
+                '%t' => "\t",
+                '%h' => '%b',
+                '%e' => '%#d',
+                '%P' => '%p',
+                '%r' => '%I:%M:%S %p',
+                '%R' => '%H:%M',
+                '%T' => '%H:%M:%S',
+                '%F' => '%Y-%m-%d',
+                '%D' => '%m/%d/%y',
+            );
+            $format = str_replace( array_keys( $mapping ), array_values( $mapping ), $format );
+        }
+        return JFactory::getDate( $time )->toFormat( $format );
     }
 }
 

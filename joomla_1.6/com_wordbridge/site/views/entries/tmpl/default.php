@@ -13,14 +13,14 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 <div class="wordbridge_blog blog<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
     <div class="wordbridge_blog_header">
     <?php if ( $this->params->get( 'show_page_heading', 1 ) ) : ?>
-    <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
-        <?php echo sprintf( '<a href="%s">%s</a>',
+        <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
+            <?php echo sprintf( '<a href="%s">%s</a>',
                             JRoute::_( $this->blogLink ),
                             $this->escape($this->params->get( 'page_title' ) ) ); ?>
-    </div>
-    <?php endif; ?>
-    <?php if ( !empty( $this->blogTitle ) ): ?>
-        <?php echo $this->escape( $this->blogTitle ); ?>
+        </div>
+        <?php if ( !empty( $this->blogTitle ) ): ?>
+            <?php echo $this->escape( $this->blogTitle ); ?>
+        <?php endif; ?>
     <?php endif; ?>
     </div>
     <div class="wordbridge_entries">
@@ -33,7 +33,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                                    '&slug=' . $entry['slug'] . '&view=entry' ),
                         $this->escape( $entry['title'] ) ); ?>
                 </h2>
-                <span class="wordbridge_date"><?php echo JFactory::getDate( $entry['date'] )->toFormat( '%B %e, %Y', true ); ?></span>
+                <span class="wordbridge_date"><?php echo WordbridgeHelper::wordBridgeStrftime( '%B %e, %Y', $entry['date'], true ); ?></span>
                 <div class="wordbridge_content">
                 <?php 
                     $blogContent = $entry['content'];

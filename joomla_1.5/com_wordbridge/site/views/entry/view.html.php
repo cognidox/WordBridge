@@ -48,6 +48,9 @@ class WordbridgeViewEntry extends JView
         $this->assignRef( 'postid', $entry['postid'] );
         $this->assignRef( 'date', $entry['date'] );
 
+        $document =& JFactory::getDocument();
+        $document->setTitle( $document->getTitle() . ' - ' . $entry['title'] );
+
         parent::display($tpl);
     }
 }
