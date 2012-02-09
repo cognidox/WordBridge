@@ -50,7 +50,7 @@ class WordbridgeModelEntries extends JModel
         {
             // We have a cached version of this content, so we
             // can load the entries up into _entries and return
-            $this->_loadEntriesFromDB( $cache_id );
+            $this->_loadEntriesFromDB( $cache_id, $blogInfo['uuid'] );
         }
         else
         {
@@ -138,11 +138,11 @@ class WordbridgeModelEntries extends JModel
         return true;
     }
 
-    function _loadEntriesFromDB( $cache_id )
+    function _loadEntriesFromDB( $cache_id, $blog_uuid )
     {
         $this->_entries = array();
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT p.post_id, p.title, p.content, UNIX_TIMESTAMP(p.post_date), p.slug, p.blog_uuid FROM #__com_wordbridge_pages AS pages LEFT JOIN #__com_wordbridge_posts AS p ON pages.post_id = p.post_id WHERE pages.cache_id = %d ORDER BY pages.post_order ASC', $cache_id );
+        $query = sprintf( 'SELECT p.post_id, p.title, p.content, UNIX_TIMESTAMP(p.post_date), p.slug, p.blog_uuid FROM #__com_wordbridge_pages AS pages LEFT JOIN #__com_wordbridge_posts AS p ON pages.post_id = p.post_id WHERE pages.cache_id = %d AND p.blog_uuid = %s ORDER BY pages.post_order ASC', $cache_id, $db->Quote( $blog_uuid, true ) );
         $db->setQuery( $query );
         $rows = $db->loadRowList();
         foreach ( $rows as $row )
