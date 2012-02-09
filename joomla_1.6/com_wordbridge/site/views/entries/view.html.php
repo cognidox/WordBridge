@@ -23,7 +23,7 @@ class WordbridgeViewEntries extends JView
      * Wordbridge entries view display method
      * @return void
      **/
-    function display($tpl = null)
+    function display( $tpl = null )
     {
         $app = JFactory::getApplication();
         $menu = $app->getMenu();
@@ -71,7 +71,15 @@ class WordbridgeViewEntries extends JView
         $title = $blogInfo['description'];
         $this->assignRef( 'blogTitle',   $title );
 
-        parent::display($tpl);
+        $document = JFactory::getDocument();
+
+        // Set the title to place above the blog
+        $blog_title = $params->get( 'page_title' );
+        if ( !$blog_title )
+            $blog_title = $document->getTitle();
+        $this->assignRef( 'blog_title', $blog_title );
+
+        parent::display( $tpl );
     }
 }
 

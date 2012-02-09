@@ -13,11 +13,11 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 <div class="wordbridge_blog blog<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
     <div class="wordbridge_blog_header">
     <?php if ( $this->params->get( 'show_page_heading', 1 ) ) : ?>
-        <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
+        <h2><span class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
         <?php echo sprintf( '<a href="%s">%s</a>',
                             JRoute::_( $this->blogLink ),
-                            $this->escape($this->params->get( 'page_title' ) ) ); ?>
-        </div>
+                            $this->escape( $this->blog_title ) ); ?>
+        </span></h2>
         <?php if ( !empty( $this->blogTitle ) ): ?>
             <?php echo $this->escape( $this->blogTitle ); ?>
         <?php endif; ?>
