@@ -55,11 +55,11 @@ class WordbridgeViewEntry extends JView
 
         $document = JFactory::getDocument();
 
-	// Set the title to place above the blog
-	$blog_title = $params->get( 'page_title' );
-	if ( !$blog_title )
-		$blog_title = $document->getTitle();
-	$this->assignRef( 'blog_title', $blog_title );
+        // Set the title to place above the blog
+        $blog_title = $params->get( 'page_title' );
+        if ( !$blog_title )
+            $blog_title = $document->getTitle();
+        $this->assignRef( 'blog_title', $blog_title );
 
         // Set the page title
         $document->setTitle( $document->getTitle() . ' - ' . $entry['title'] );
