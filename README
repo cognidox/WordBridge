@@ -37,21 +37,26 @@ To install the component, follow the steps below:
 Using the Component:
 -------------------
 
-To use the component to link to a WordPress.com blog follow the steps
+To use the component to link to a WordPress blog follow the steps
 below:
 
 1) Log into your Joomla site as a user who can add menu entries.
 2) Use Joomla's Menu Manager to add a new menu item.
 3) For the Menu Item Type, select WordBridge -> List of blog entries.
 4) In the menu item's WordBridge Settings, set the Wordpress blog name
-   to the name of your WordPress.com blog. e.g. if the blog is available
-   at http://example.wordpress.com/, then the blog name to enter is
-   'example'. If the blog is self-hosted, enter the fully qualified
-   hostname of the blog. e.g. if the blog is http://myblog.example.com/, the
-   blog name to enter is 'myblog.example.com'.
+   to the name of your WordPress.com blog.
+     e.g. If the blog is available at http://example.wordpress.com/, 
+          then the blog name to enter is 'example'. 
+          If the blog is self-hosted, enter the fully qualified
+          hostname of the blog. So, if the blog is http://myblog.example.com/,
+          the blog name to enter is 'myblog.example.com'.
 5) Save the menu item entry. The blog will now appear in Joomla. New 
    entries posted to the wordpress.com site will automatically appear
    in the Joomla site.
+6) If the blog is self-hosted, install the WordBridge Pro WordPress
+   component in WordPress. The WordBridge Pro plugin can be downloaded
+   from the project page:
+   http://www.cognidox.com/opensource/wordbridge-wordpress-to-joomla-bridge
 
 
 Credits
