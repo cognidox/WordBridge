@@ -74,7 +74,7 @@ class WordbridgeViewCategory extends JView
         $document = JFactory::getDocument();
 
         // Set the title to place above the blog
-        $blog_title = $params->get( 'page_title' );
+        $blog_title = $params->get( 'page_heading' );
         if ( !$blog_title )
             $blog_title = $document->getTitle();
         $this->assignRef( 'blog_title', $blog_title );

@@ -15,7 +15,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <div class="componentheading<?php echo $this->escape($this->params->get('pageclass_sfx')); ?>">
         <?php echo sprintf( '<a href="%s">%s</a>',
                             JRoute::_( $this->blogLink ),
-                            $this->escape($this->params->get( 'page_title' ) ) ); ?>
+                            $this->escape( $this->params->get( 'page_title' ) ) ); ?>
         </div>
         <?php if ( !empty( $this->blogTitle ) ): ?>
             <?php echo $this->escape( $this->blogTitle ); ?>

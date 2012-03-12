@@ -58,6 +58,7 @@ class WordbridgeHelper {
             $url = sprintf( 'http://twitter-api.wordpress.com/users/show.xml?screen_name=%s', urlencode( $fqdn ) );
             $curl = curl_init();
             curl_setopt( $curl, CURLOPT_URL, $url );
+            curl_setopt( $curl, CURLOPT_TIMEOUT, 60 );
 
             $xml = WordbridgeHelper::curl_redir_exec( $curl );
             curl_close( $curl );
@@ -83,6 +84,7 @@ class WordbridgeHelper {
             $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
             $curl = curl_init();
             curl_setopt( $curl, CURLOPT_URL, $url );
+            curl_setopt( $curl, CURLOPT_TIMEOUT, 60 );
 
             $xml = WordbridgeHelper::curl_redir_exec( $curl );
             curl_close( $curl );
@@ -207,7 +209,7 @@ class WordbridgeHelper {
                 $db->quote( $blog_uuid, true ),
                 $db->quote( $entry['title'], true ),
                 $db->quote( $entry['content'], true ),
-                $db->quote( JFactory::getDate( $entry['date'] )->toFormat( '%F %T %Z' ), true ),
+                $db->quote( WordbridgeHelper::wordBridgeStrftime( '%F %T %Z', $entry['date'] ), true ),
                 $db->quote( $entry['slug'], true ) );
             $db->setQuery( $post_query );
             $db->query();
@@ -232,6 +234,9 @@ class WordbridgeHelper {
         // Use curl to get the data
         $curl = curl_init();
         curl_setopt( $curl, CURLOPT_URL, $url );
+        // Give things a large timeout - caching should not make this
+        // too bad to deal with
+        curl_setopt( $curl, CURLOPT_TIMEOUT, 60 );
 
         $xml = WordbridgeHelper::curl_redir_exec( $curl );
         curl_close( $curl );
