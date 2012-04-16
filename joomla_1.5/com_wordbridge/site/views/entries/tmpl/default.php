@@ -156,5 +156,6 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
 <?php
 if ( $this->convertLinks )
 {
-    include_once( JPATH_COMPONENT.DS.'views'.DS.'entries'.DS.'tmpl'.DS.'convert_links.php' );
+    JHTML::_( 'behavior.mootools' );
+    echo $this->loadTemplate( 'convertlinks' );
 }
