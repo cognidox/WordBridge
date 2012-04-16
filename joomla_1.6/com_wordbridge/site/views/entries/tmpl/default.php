@@ -45,6 +45,7 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
                             $blogContent = substr( $entry['content'], 0, $br_pos );
                         }
                     }
+
                     // Look for more-link
                     if ( preg_match( '/^(.+?)<span\s+id="more-(\d+)"><\/span>(.*)/is', $blogContent, $matches ) )
                     {
@@ -153,3 +154,8 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <?php endif; ?>
     </div>
 </div>
+<?php
+if ( $this->convertLinks )
+{
+    include_once( JPATH_COMPONENT.DS.'views'.DS.'entries'.DS.'tmpl'.DS.'convert_links.php' );
+}

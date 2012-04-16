@@ -12,6 +12,10 @@
                 <option value="yes">COM_WORDBRIDGE_YES</option>
                 <option value="no">COM_WORDBRIDGE_NO</option>
             </field>
+            <field name="wordbridge_convert_links" type="radio" default="no" label="COM_WORDBRIDGE_CONVERT_LINKS_TITLE" description="COM_WORDBRIDGE_CONVERT_LINKS_DESC">
+                <option value="yes">COM_WORDBRIDGE_YES</option>
+                <option value="no">COM_WORDBRIDGE_NO</option>
+            </field>
             <field name="wordbridge_blog_entry_feed_count" type="text" default="10" size="3" label="COM_WORDBRIDGE_FEED_COUNT" description="COM_WORDBRIDGE_FEED_COUNT_DESC" />
             <field name="wordbridge_searchable" type="radio" default="yes" label="COM_WORDBRIDGE_SEARCHABLE" description="COM_WORDBRIDGE_SEARCHABLE_DESC">
                 <option value="yes">COM_WORDBRIDGE_YES</option>

@@ -57,6 +57,10 @@ class WordbridgeViewEntries extends JView
             $this->assignRef( 'newerLink', $newer_link );
         }
 
+        // Determine if we'll convert links
+        $convertLinks = ( $params->get( 'wordbridge_convert_links', 'no' ) == 'yes' ? true : false );
+        $this->assignRef( 'convertLinks', $convertLinks );
+
         // Load the model for the desired page
         $model = &$this->getModel();
         $model->loadEntries( $page, $blogInfo, $nocache );

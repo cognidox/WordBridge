@@ -50,6 +50,10 @@ class WordbridgeViewEntries extends JView
             $page = $max_page;
         }
 
+        // Determine if we'll convert links
+        $convertLinks = ( $params->get( 'wordbridge_convert_links', 'no' ) == 'yes' ? true : false );
+        $this->assignRef( 'convertLinks', $convertLinks );
+
         $baseUrl = $item->link . '&Itemid=' . $item->id;
         $this->assignRef( 'blogLink', $baseUrl );
         if ( $page < $max_page )

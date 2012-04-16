@@ -41,6 +41,10 @@ class WordbridgeViewEntry extends JView
         $baseUrl = JSite::getMenu()->getActive()->link . '&Itemid=' . JSite::getMenu()->getActive()->id;
         $this->assignRef( 'blogLink', $baseUrl );
 
+        // Determine if we'll convert links
+        $convertLinks = ( $params->get( 'wordbridge_convert_links', 'no' ) == 'yes' ? true : false );
+        $this->assignRef( 'convertLinks', $convertLinks );
+
         $this->assignRef( 'content', $entry['content'] );
         $this->assignRef( 'title', $entry['title'] );
         $this->assignRef( 'slug', $entry['slug'] );
