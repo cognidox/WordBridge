@@ -67,6 +67,12 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         </div>
         <?php endif; ?>
     </div>
+    <?php
+        if ( $this->jcomments != false )
+        {
+            echo sprintf( '<div class="wordbridge_jcomments">%s</div>', $this->jcomments );
+        }
+    ?>
 </div>
 <?php
 if ( $this->convertLinks )

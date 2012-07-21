@@ -57,6 +57,35 @@ class WordbridgeViewEntry extends JView
         $this->assignRef( 'postid', $entry['postid'] );
         $this->assignRef( 'date', $entry['date'] );
 
+        // Allow JComments to be added to blog entries
+        $jcomments = false;
+        $jcommentsPath =  JPATH_SITE . DS .'components' . DS . 'com_jcomments' . DS;
+        $jcommentFile = $jcommentsPath . 'jcomments.php';
+        if ( $params->get( 'wordbridge_show_jcomments' ) == 'yes' &&
+             file_exists( $jcommentFile ) )
+        {
+            $jbase = JPATH_SITE . DS .'components' . DS;
+            $jPlgSrc = $jbase .  'com_wordbridge' . DS . 'assets' . DS . 'com_wordbridge.plugin.php';
+            $jPlgDst = $jbase .  'com_jcomments' . DS . 'plugins' . DS . 'com_wordbridge.plugin.php';
+            // Check to see if the integration is installed
+            $copyRes = true;
+            if ( !file_exists( $jPlgDst ) ||
+                ( filemtime( $jPlgSrc ) > filemtime( $jPlgDst ) ) )
+            {
+                // Copy the wordbridge plugin over to jcomments
+                $copyRes = JFile::copy( $jPlgSrc, $jPlgDst );
+            }
+            // Only set up JComments if the wordbridge plugin is
+            // installed OK
+            if ( $copyRes )
+            {
+                require_once( $jcommentFile );
+                $jid = ( $item->id * 10000000 ) + $entry['postid'];
+                $jcomments = JComments::showComments( $jid, 'com_wordbridge', $entry['title'] );
+            }
+        }
+        $this->assignRef( 'jcomments', $jcomments );
+
         $document = JFactory::getDocument();
 
         // Set the title to place above the blog

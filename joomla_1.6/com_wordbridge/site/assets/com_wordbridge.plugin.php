@@ -12,14 +12,23 @@ class jc_com_wordbridge extends JCommentsPlugin
         $db = & JFactory::getDBO();
 
         // Need to get the blog uuid based on the current menu item
-        $app = JFactory::getApplication();
-        $menu = $app->getMenu();
-        $item = $menu->getActive();
-        if ( !$item )
+        $params = false;
+        if ( version_compare( JVERSION, '1.6.0', 'lt' ) )
         {
-            $item = $menu->getItem( JCommentsPlugin::getItemid( 'com_wordbridge' ) );
+            $mainframe = &JFactory::getApplication();
+            $params = &$mainframe->getParams();
         }
-        $params = $item->params;
+        else
+        {
+            $app = JFactory::getApplication();
+            $menu = $app->getMenu();
+            $item = $menu->getActive();
+            if ( !$item )
+            {
+                $item = $menu->getItem( JCommentsPlugin::getItemid( 'com_wordbridge' ) );
+            }
+            $params = $item->params;
+        }
         require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
         $db->setQuery( sprintf( "SELECT title FROM #__com_wordbridge_posts WHERE blog_uuid='%s' AND post_id = %d", $db->quote( $blogInfo['uuid'] ), $id % 10000000 ) );
@@ -37,7 +46,7 @@ class jc_com_wordbridge extends JCommentsPlugin
  
     function getObjectOwner( $id ) {
         $db = & JFactory::getDBO();
-        $db->setQuery( sprintf( "SELECT id, '%s' FROM #__user_usergroup_map AS map LEFT JOIN #__usergroups AS ug ON map.group_id = ug.id LEFT JOIN #__users AS u ON map.user_id = u.id WHERE u.block = 0 AND ug.id = 8 LIMIT 1", $db->quote( 'admin' ), $db->quote( $id ) ) );
+        $db->setQuery( sprintf( "SELECT id, %s FROM #__user_usergroup_map AS map LEFT JOIN #__usergroups AS ug ON map.group_id = ug.id LEFT JOIN #__users AS u ON map.user_id = u.id WHERE u.block = 0 AND ug.id = 8 LIMIT 1", $db->quote( 'admin' ), $id ) );
         return $db->loadResult();
     }
 }
