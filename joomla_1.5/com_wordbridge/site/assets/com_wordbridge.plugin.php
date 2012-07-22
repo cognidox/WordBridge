@@ -29,7 +29,7 @@ class jc_com_wordbridge extends JCommentsPlugin
             }
             $params = $item->params;
         }
-        require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
+        require_once( JPATH_SITE . DS .'components' . DS . 'com_wordbridge' . DS . 'helpers' . DS . 'helper.php' );
         $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
         $db->setQuery( sprintf( "SELECT title FROM #__com_wordbridge_posts WHERE blog_uuid='%s' AND post_id = %d", $db->quote( $blogInfo['uuid'] ), $id % 10000000 ) );
         return $db->loadResult();
