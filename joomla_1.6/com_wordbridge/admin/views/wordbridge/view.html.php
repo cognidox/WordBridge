@@ -18,7 +18,7 @@ class WordbridgeViewWordbridge extends JView
      * Wordbridge entry view display method
      * @return void
      **/
-    function display($tpl = null)
+    function display( $tpl = null )
     {
         JHTML::_( 'stylesheet', 'admin.css', 'media/com_wordbridge/css/' );
         JToolBarHelper::title( JText::_( 'COM_WORDBRIDGE' ), 'wordbridge' );

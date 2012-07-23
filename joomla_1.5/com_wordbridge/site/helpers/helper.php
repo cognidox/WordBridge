@@ -29,7 +29,7 @@ class WordbridgeHelper {
         if ( $blogname == null )
         {
             $params = &JComponentHelper::getParams( 'com_wordbridge' );
-            $blogname = $params->get( 'wordbridge_blog_name' );
+            $blogname = trim( $params->get( 'wordbridge_blog_name' ) );
         }
         if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
         {
@@ -155,7 +155,7 @@ class WordbridgeHelper {
     function getBlogByName( $name )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s LIMIT 1', $db->Quote( $name, true ) );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s LIMIT 1', $db->Quote( trim( $name ), true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -177,7 +177,7 @@ class WordbridgeHelper {
     function storeBlog( $id, $uuid, $name, $description, $last_post )
     {
         $db =& JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->Quote( $uuid, true ), $db->Quote( $name, true ), $db->Quote( $description, true ), $db->Quote( $last_post, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->Quote( $uuid, true ), $db->Quote( trim( $name ), true ), $db->Quote( trim( $description ), true ), $db->Quote( $last_post, true ) );
         $db->setQuery( $query );
         $db->query();
     }

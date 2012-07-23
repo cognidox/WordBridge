@@ -24,6 +24,7 @@ class WordbridgeController extends JController
         global $mainframe;
         parent::__construct();
         $this->registerDefaultTask( 'display' );
+        $this->registerTask( 'clearCache', 'clearCache' );
     }
 
     function display( $cachable = false, $urlparams = false )
@@ -33,6 +34,14 @@ class WordbridgeController extends JController
         {
             JRequest::setVar( 'view', 'wordbridge' );
         }
+        parent::display();
+    }
+
+    function clearCache()
+    {
+        JRequest::setVar( 'view', 'wordbridge' );
+        JRequest::setVar( 'layout', 'clear_cache' );
+        JRequest::setVar( 'format', 'raw' );
         parent::display();
     }
 }

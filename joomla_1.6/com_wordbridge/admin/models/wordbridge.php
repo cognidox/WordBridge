@@ -83,5 +83,25 @@ class WordbridgeModelWordbridge extends JModel
         }
         return $result;
     }
+
+    /**
+     * Delete all the cached entries for a blog
+     */
+    function clearBlogCache( $blogName )
+    {
+        $blogInfo = WordbridgeHelper::getBlogByName( $blogName );
+        if ( $blogInfo && $blogInfo['uuid'] )
+        {
+            $db =& JFactory::getDBO();
+            $query = sprintf( "DELETE FROM #__com_wordbridge_cache WHERE blog_uuid = %s", $db->Quote( $blogInfo['uuid'] ) );
+            $db->setQuery( $query );
+            $db->query();
+            $query = sprintf( "DELETE FROM #__com_wordbridge_posts WHERE blog_uuid = %s", $db->Quote( $blogInfo['uuid'] ) );
+            $db->setQuery( $query );
+            $db->query();
+            return true;
+        }
+        return false;
+    }
 }
 

@@ -30,7 +30,7 @@ class WordbridgeHelper {
         {
             $app = JFactory::getApplication();
             $params = $app->getParams();
-            $blogname = $params->get( 'wordbridge_blog_name' );
+            $blogname = trim( $params->get( 'wordbridge_blog_name' ) );
         }
         if ( empty( $blogname ) || ! function_exists( 'curl_init' ) )
         {
@@ -156,7 +156,7 @@ class WordbridgeHelper {
     public static function getBlogByName( $name )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s LIMIT 1', $db->quote( $name, true ) );
+        $query = sprintf( 'SELECT blog_id, blog_uuid, blog_name, description, last_post, UNIX_TIMESTAMP(updated) FROM #__com_wordbridge_blogs WHERE blog_name = %s LIMIT 1', $db->quote( trim( $name ), true ) );
         $db->setQuery( $query );
         $blog = $db->loadRow();
         if ( $blog == null )
@@ -178,7 +178,7 @@ class WordbridgeHelper {
     function storeBlog( $id, $uuid, $name, $description, $last_post )
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->quote( $uuid, true ), $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
+        $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->quote( $uuid, true ), $db->quote( trim( $name ), true ), $db->quote( trim( $description ), true ), $db->quote( $last_post, true ) );
         $db->setQuery( $query );
         $db->query();
     }

@@ -8,6 +8,7 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'helper.php' );
+JHTML::_( 'behavior.mootools' );
 
 ?>
 <h2><?php echo JText::_( 'COM_WORDBRIDGE' ); ?></h2>
@@ -17,6 +18,7 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'he
     <?php echo JText::_( 'COM_WORDBRIDGE_BRIDGE_MSG' ); ?>
     </p>
     <?php foreach ( $this->stats as $blog ): ?>
+        <div>
         <?php echo sprintf( '<h3><a href="http://%s/" target="_blank">%s</a></h3>', $this->escape( WordbridgeHelper::fqdnBlogName( $blog->blog_name ) ), $this->escape( WordbridgeHelper::fqdnBlogName( $blog->blog_name ) ) ); ?>
         <blockquote id="wordbridge_blog_<?php echo $blog->blog_name; ?>">
         <span class="wordbridge_updated"><?php echo JText::sprintf( 'COM_WORDBRIDGE_LAST_UPDATED', 
@@ -39,7 +41,7 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'he
         <span class="wordbridge_cached_pages"><?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_PAGES',
                     $blog->page_count  ); ?></span><br />
         <span class="wordbridge_cached_posts"><?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_POSTS',
-                    $blog->post_count  ); ?></span><br />
+                    $blog->post_count  ); ?></span> (<a href="#" class="wordbridge_clear_cache" rel="<?php echo htmlspecialchars( trim( $blog->blog_name ) ); ?>"><?php echo JText::_('COM_WORDBRIDGE_CLEAR_CACHE'); ?></a>)<br />
         <?php echo JText::_( 'COM_WORDBRIDGE_USED_MENUS' ); ?><br /><ul>
         <?php foreach ( $blog->menus as $menu ): ?>
             <li>
@@ -51,9 +53,32 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_wordbridge'.DS.'helpers'.DS.'he
             </li>
         <?php endforeach; ?></ul>
         </blockquote>
+        </div>
     <?php endforeach; ?>
 <?php else: ?>
     <?php echo JText::_( 'COM_WORDBRIDGE_NOTHING_BRIDGED' ); ?>
 <?php endif; ?>
 
+<script type="text/javascript">
+<!--
+$$('a.wordbridge_clear_cache').addEvent('click',
+    function(e){
+        e = new Event(e).stop();
+        var site = $(this).get('rel');
+        var url = 'index.php?blog_name=' + escape(site) + '&option=com_wordbridge&task=clearCache&view=wordbridge&format=raw';
+        var container = $(this).getParent('blockquote');
+        var req = new Request({
+            url: url,
+            onComplete: function(res) {                if (res == 1) {
+                    container.getElements('.wordbridge_cached_pages').set('text','<?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_PAGES', '0' ); ?>');
+                    container.getElements('.wordbridge_cached_posts').set('text','<?php echo JText::sprintf( 'COM_WORDBRIDGE_CACHED_POSTS', '0
+' ); ?>');
+                }
+            }
+        });
+        req.send();
+    }
+);
+// -->
+</script>
 
