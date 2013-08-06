@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_WORDBRIDGE_LAYOUT_ENTRIES_TITLE">
+        <message>
+            <![CDATA[COM_WORDBRIDGE_LAYOUT_ENTRIES_DESC]]>
+        </message>
+    </layout>
+    <fields name="params">
+        <fieldset name="params" label="COM_WORDBRIDGE_LAYOUT_ENTRIES_PARAMS_LABEL">
+            <field name="wordbridge_blog_name" type="text" size="30" default="" label="COM_WORDBRIDGE_BLOG_NAME" description="COM_WORDBRIDGE_BLOG_DESCRIPTION" />
+            <field name="wordbridge_show_links" type="radio" default="yes" label="COM_WORDBRIDGE_SHOW_LINKS_TITLE" description="COM_WORDBRIDGE_SHOW_LINKS_DESC">
+                <option value="yes">COM_WORDBRIDGE_YES</option>
+                <option value="no">COM_WORDBRIDGE_NO</option>
+            </field>
+            <field name="wordbridge_blog_entry_feed_count" type="text" default="10" size="3" label="COM_WORDBRIDGE_FEED_COUNT" description="COM_WORDBRIDGE_FEED_COUNT_DESC" />
+            <field name="wordbridge_searchable" type="radio" default="yes" label="COM_WORDBRIDGE_SEARCHABLE" description="COM_WORDBRIDGE_SEARCHABLE_DESC">
+                <option value="yes">COM_WORDBRIDGE_YES</option>
+                <option value="no">COM_WORDBRIDGE_NO</option>
+            </field>
+            <field name="wordbridge_cachetime" type="text" default="300" size="4" label="COM_WORDBRIDGE_CACHETIME" description="COM_WORDBRIDGE_CACHETIME_DESC" />
+        </fieldset>
+    </fields>
+</metadata>
