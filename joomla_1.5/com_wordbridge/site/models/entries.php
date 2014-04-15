@@ -131,11 +131,11 @@ class WordbridgeModelEntries extends JModel
         {
             return false;
         }
+
         $url = WordbridgeHelper::fqdnBlogName( $blogname );
         if (!preg_match("/^https?:\/\/.+/", $url)) {
             $url = sprintf( 'http://%s', $url );
         }
-
         $url = sprintf( '%s/?feed=rss2&paged=%d',
                          $url, (int) $page );
 

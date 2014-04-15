@@ -81,13 +81,11 @@ class WordbridgeHelper {
         }
         else
         {
-            #################################
             if (preg_match("/^https?:\/\/.+/", $fqdn)) {
                 $url = sprintf( '%s/?feed=wordbridge', $fqdn );
             } else {
                 $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
             }
-            #################################
             $curl = curl_init();
             curl_setopt( $curl, CURLOPT_URL, $url );
 
@@ -193,7 +191,6 @@ class WordbridgeHelper {
 
     function nameToSlug( $name )
     {
-        #$name = strtolower( trim ( $name ) );
         $name = trim ( $name ) ;
         $name = preg_replace( '/[\.\s]/', '-', $name );
         $name = preg_replace( '/[^\-a-z0-9]/', '', $name );
@@ -435,6 +432,7 @@ class WordbridgeHelper {
     function fqdnBlogName( $name )
     {
         $name = trim( $name ) ;
+
         if ( strpos( $name, '.' ) == false )
         {
             return sprintf( '%s.wordpress.com', strtolower( $name ) );
@@ -449,6 +447,7 @@ class WordbridgeHelper {
         {
             $name = strtolower( $name );
         }
+
         return $name;
     }
 
