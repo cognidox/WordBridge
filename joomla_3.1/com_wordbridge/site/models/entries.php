@@ -134,9 +134,14 @@ class WordbridgeModelEntries extends JModelLegacy
             return false;
         }
 
-        $url = sprintf( 'http://%s/?feed=rss2&paged=%d',
-                         WordbridgeHelper::fqdnBlogName( $blogname ), (int) $page );
-        
+        $url = WordbridgeHelper::fqdnBlogName( $blogname );
+
+        if (!preg_match("/^https?:\/\/.+/", $url)) {
+            $url = sprintf( 'http://%s', $url );
+        }
+        $url = sprintf( '%s/?feed=rss2&paged=%d',
+                         $url, (int) $page );
+ 
         $this->_entries = WordbridgeHelper::getEntriesFromUrl( $url );
         return true;
     }

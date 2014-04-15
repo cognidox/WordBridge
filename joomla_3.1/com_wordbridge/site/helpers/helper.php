@@ -207,7 +207,7 @@ class WordbridgeHelper {
 
     public static function nameToSlug( $name )
     {
-        $name = strtolower( trim ( $name ) );
+        $name = trim ( $name );
         $name = preg_replace( '/[\.\s]/', '-', $name );
         $name = preg_replace( '/[^\-a-z0-9]/', '', $name );
         $name = preg_replace( '/--+/', '-', $name );
@@ -455,16 +455,25 @@ class WordbridgeHelper {
      * used in URLs. This will assume things without a '.' are 
      * hosted on wordpress.com, while others are full hostnames
      */
-    public static function fqdnBlogName( $name )
+    function fqdnBlogName( $name )
     {
-        $name = trim( strtolower( $name ) );
+        $name = trim( $name ) ;
         if ( strpos( $name, '.' ) == false )
         {
-            return sprintf( '%s.wordpress.com', $name );
+            return sprintf( '%s.wordpress.com', strtolower( $name ) );
+        }
+
+        if ( strpos( $name, '/' ) != false )
+        {
+            list( $fqdn, $subdir ) = explode( '/', $name, 2 );
+            $name = sprintf( '%s/%s', strtolower( $fqdn ), $subdir );
+        }
+        else
+        {
+            $name = strtolower( $name );
         }
         return $name;
     }
-
 
     /**
      * wordBridgeStrftime

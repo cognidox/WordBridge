@@ -81,12 +81,19 @@ class WordbridgeHelper {
         }
         else
         {
-            $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
+            #################################
+            if (preg_match("/^https?:\/\/.+/", $fqdn)) {
+                $url = sprintf( '%s/?feed=wordbridge', $fqdn );
+            } else {
+                $url = sprintf( 'http://%s/?feed=wordbridge', $fqdn );
+            }
+            #################################
             $curl = curl_init();
             curl_setopt( $curl, CURLOPT_URL, $url );
 
             $xml = WordbridgeHelper::curl_redir_exec( $curl );
             curl_close( $curl );
+            #echo htmlspecialchars(print_r($xml, 1));
             if ( empty( $xml ) )
             {
                 return $info;
@@ -120,6 +127,8 @@ class WordbridgeHelper {
                 WordbridgeHelper::storeBlog( $info['id'], $info['uuid'], $blogname, $info['description'], $info['last_post'] );
             }
         }
+
+
         return $info;
     }
 
@@ -184,7 +193,8 @@ class WordbridgeHelper {
 
     function nameToSlug( $name )
     {
-        $name = strtolower( trim ( $name ) );
+        #$name = strtolower( trim ( $name ) );
+        $name = trim ( $name ) ;
         $name = preg_replace( '/[\.\s]/', '-', $name );
         $name = preg_replace( '/[^\-a-z0-9]/', '', $name );
         $name = preg_replace( '/--+/', '-', $name );
@@ -424,10 +434,20 @@ class WordbridgeHelper {
      */
     function fqdnBlogName( $name )
     {
-        $name = trim( strtolower( $name ) );
+        $name = trim( $name ) ;
         if ( strpos( $name, '.' ) == false )
         {
-            return sprintf( '%s.wordpress.com', $name );
+            return sprintf( '%s.wordpress.com', strtolower( $name ) );
+        } 
+
+        if ( strpos( $name, '/' ) != false )
+        {
+            list( $fqdn, $subdir ) = explode( '/', $name, 2 );
+            $name = sprintf( '%s/%s', strtolower( $fqdn ), $subdir );
+        }
+        else
+        {
+            $name = strtolower( $name );
         }
         return $name;
     }
