@@ -93,6 +93,7 @@ class WordbridgeHelper {
 
             $doc = new DOMDocument();
             $doc->loadXML( $xml );
+
             $info['count'] = $doc->getElementsByTagName( 'count' )->item( 0 )->textContent;
             $info['description'] = $doc->getElementsByTagName( 'description' )->item( 0 )->textContent;
             $info['id'] = $doc->getElementsByTagName( 'id' )->item( 0 )->textContent;
@@ -197,7 +198,7 @@ class WordbridgeHelper {
      * storeBlog
      * Store the ID, name and description of a blog
      */
-    function storeBlog( $id, $uuid, $name, $description, $last_post )
+    public static function storeBlog( $id, $uuid, $name, $description, $last_post )
     {
         $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->quote( $uuid, true ), $db->quote( $name, true ), $db->quote( $description, true ), $db->quote( $last_post, true ) );
@@ -455,7 +456,7 @@ class WordbridgeHelper {
      * used in URLs. This will assume things without a '.' are 
      * hosted on wordpress.com, while others are full hostnames
      */
-    function fqdnBlogName( $name )
+    public static function fqdnBlogName( $name )
     {
         $name = trim( $name ) ;
         if ( strpos( $name, '.' ) == false )
