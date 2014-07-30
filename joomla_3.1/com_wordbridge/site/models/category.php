@@ -60,6 +60,14 @@ class WordbridgeModelCategory extends JModelLegacy
         }
 
         $results = WordbridgeHelper::getEntriesFromUrl( $url );
+
+        if ( !count( $results ) )
+        {
+            $url = sprintf( 'http://%s/?feed=rss2&category_name=%s-2%s',
+                         WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $pageParam );
+            $isTag = false;
+            $results = WordbridgeHelper::getEntriesFromUrl( $url );
+        }
         if ( !$isTag && !count( $results ) && $page <= 1 )
         {
             if ( $blogInfo['uuid'] )
@@ -69,6 +77,15 @@ class WordbridgeModelCategory extends JModelLegacy
             $isTag = true;
             $results = WordbridgeHelper::getEntriesFromUrl( $tagUrl );
         }
+        else
+        {
+            # Not a tag
+            if ( $blogInfo['uuid'] )
+            {
+                WordbridgeHelper::addCategory( $blogInfo['uuid'], $category_name );
+            }
+        }
+
         return (object) array( 'isTag' => $isTag,
                                'entries' => $results );
     }

@@ -87,6 +87,7 @@ class WordbridgeModelEntries extends JModelLegacy
             $db->setQuery( $del_cache_query );
             $db->execute();
         }
+
         $del_query = sprintf( 'DELETE FROM #__com_wordbridge_cache WHERE blog_uuid = %s AND page_num = %d', $db->quote( $blogInfo['uuid'], true ), $page );
         $db->setQuery( $del_query );
         $db->execute();
@@ -163,12 +164,12 @@ class WordbridgeModelEntries extends JModelLegacy
             $entry['slug'] = $row[4];
             $entry['categories'] = array();
 
-            $cat_query = sprintf( 'SELECT DISTINCT category FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry['postid'], $db->quote( $row[5], true ) );
+            $cat_query = sprintf( 'SELECT DISTINCT category_seq, category FROM #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry['postid'], $db->quote( $row[5], true ) );
             $db->setQuery( $cat_query );
             $cat_rows = $db->loadRowList();
             foreach ( $cat_rows as $cat )
             {
-                $entry['categories'][] = $cat[0];
+                $entry['categories'][] = $cat[1];
             }
             $this->_entries[] = $entry;
         }

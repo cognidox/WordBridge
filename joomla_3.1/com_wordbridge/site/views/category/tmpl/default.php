@@ -28,8 +28,22 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <thead>
             <tr>
                 <th colspan="2">
-                    <?php echo JText::sprintf( 
-                        $this->isTag ? 'COM_WORDPRESS_TAG_TITLE' : 'COM_WORDPRESS_CATEGORY_TITLE', $this->escape( $this->categoryName ) ); ?>
+                    <?php
+                        $blogname = $this->params->get( 'wordbridge_blog_name' );
+                        if ( empty( $blogname ) || ! function_exists ( 'curl_init' ) )
+                        {
+                            die();
+                        }
+                        $blogInfo = WordbridgeHelper::getBlogByName( $blogname );
+
+                        $prettyCategoryName = $this->categoryName;
+                        if ( !WordbridgeHelper::isCategory( $blogInfo['uuid'], $prettyCategoryName ) && preg_match( "/.+-2$/", $prettyCategoryName ) )
+                        {
+                            $prettyCategoryName = substr( $prettyCategoryName, 0, strlen( $prettyCategoryName ) - 2 );
+                        }
+                        echo JText::sprintf( 
+                        $this->isTag ? 'COM_WORDPRESS_TAG_TITLE' : 'COM_WORDPRESS_CATEGORY_TITLE', $this->escape( $prettyCategoryName ) );
+                    ?>
                 </th>
             </tr>
         </thead>

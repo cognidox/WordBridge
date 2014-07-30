@@ -52,16 +52,40 @@ require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
         <?php if ( !empty( $this->categories ) ): ?>
         <div class="wordbridge_categories">
         <?php
+
+            $seenCategories = array();
             $categoryLinkList = array();
-            foreach ( $this->categories as $category )
+            $lastWasTag = false;
+            $blogname = $this->params->get( 'wordbridge_blog_name' );
+            if ( empty( $blogname ) || ! function_exists ( 'curl_init' ) )
             {
-                $slug = WordbridgeHelper::nameToSlug( $category );
-                $categoryLinkList[] = sprintf( '<a href="%s" class="wordbridge_category">%s</a>',
-                                               $this->blogLink . '&c=' .
-                                               $slug . '&view=category' .
-                                               '&name=' . urlencode( $category ),
-                                               $this->escape( $category ) );
+                return null;
             }
+            $blogInfo = WordbridgeHelper::getBlogByName( $blogname );
+ foreach ( $this->categories as $category )
+            {
+                if ( array_key_exists( strtolower( $category ), $seenCategories ) || ( $lastWasTag && WordbridgeHelper::isCategory( $blogInfo['uuid'], $category ) ) )
+                {
+                    $slug = WordbridgeHelper::nameToSlug( $category . "-2" );
+                    $categoryLinkList[] = sprintf( '<a href="%s" class="wordbridge_category">%s</a>',
+                                   $this->blogLink . '&c=' .
+                                   $slug . '&view=category' .
+                                   '&name=' . urlencode( $category . "-2" ),
+                                   $this->escape( $category ) );
+                }
+                else
+                {
+                    $slug = WordbridgeHelper::nameToSlug( $category );
+                    $seenCategories[strtolower($category)] = true;
+                    $categoryLinkList[] = sprintf( '<a href="%s" class="wordbridge_category">%s</a>',
+                                   $this->blogLink . '&c=' .
+                                   $slug . '&view=category' .
+                                   '&name=' . urlencode( $category ),
+                                   $this->escape( $category ) );
+                }
+                $lastWasTag = ( $lastWasTag || WordbridgeHelper::isTag( $blogInfo['uuid'], $category ) );
+            }
+
             echo JText::_( 'COM_WORDBRIDGE_POSTED_IN' ). ': <span class="wordbridge_categories">' .
                  implode( ', ', $categoryLinkList ) . '</span>';
         ?>
