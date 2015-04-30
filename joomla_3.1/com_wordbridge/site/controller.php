@@ -7,7 +7,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -24,15 +24,15 @@ class WordbridgeController extends JControllerLegacy
         global $mainframe;
 	$mainframe = JFactory::getApplication();
         parent::__construct();
-        $this->registerDefaultTask( 'display' );
+        $this->registerDefaultTask('display');
     }
 
-    function display( $cachable = false, $urlparams = false )
+    function display($cachable = false, $urlparams = false)
     {
         // Set a default view if none exists
-        if ( ! JRequest::getCmd( 'view' ) )
+        if (!JRequest::getCmd('view'))
         {
-            JRequest::setVar( 'view', 'entries' );
+            JRequest::setVar('view', 'entries');
         }
         parent::display($cachable, $urlparams);
     }

@@ -16,13 +16,13 @@ class WordbridgeModelEntry extends JModelLegacy
     /**
      * We should load entries off the DB
      */
-    function getEntry( $postid, $blog_uuid )
+    function getEntry($postid, $blog_uuid)
     {
         $db = JFactory::getDBO();
-        $query = sprintf( 'SELECT post_id, title, content, UNIX_TIMESTAMP(post_date), slug FROM #__com_wordbridge_posts WHERE post_id = %d AND blog_uuid = %s', $postid, $db->quote( $blog_uuid, true ) );
-        $db->setQuery( $query );
+        $query = sprintf('SELECT post_id, title, content, UNIX_TIMESTAMP(post_date), slug FROM #__com_wordbridge_posts WHERE post_id = %d AND blog_uuid = %s', $postid, $db->quote($blog_uuid, true));
+        $db->setQuery($query);
         $entry = $db->loadRow();
-        if ( !$entry )
+        if (!$entry)
         {
             return null;
         }
@@ -33,10 +33,10 @@ class WordbridgeModelEntry extends JModelLegacy
         $result['date'] = $entry[3];
         $result['slug'] = $entry[4];
         $result['categories'] = array();
-        $cat_query = sprintf( 'SELECT DISTINCT category_seq, category from #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry[0], $db->quote( $blog_uuid, true ) );
-        $db->setQuery( $cat_query );
+        $cat_query = sprintf('SELECT DISTINCT category_seq, category from #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry[0], $db->quote($blog_uuid, true));
+        $db->setQuery($cat_query);
         $categories = $db->loadRowList();
-        foreach ( $categories as $cat )
+        foreach ($categories as $cat)
         {
             $result['categories'][] = $cat[1];
         }
