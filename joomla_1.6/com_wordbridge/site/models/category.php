@@ -32,7 +32,14 @@ class WordbridgeModelCategory extends JModel
     function _loadEntriesFromWeb( $page = 1, $category_name )
     {
         $app = JFactory::getApplication();
-        $params = $app->getParams();
+        $menu = $app->getMenu();
+        $item = $menu->getActive();
+        if ( !$item )
+        {
+            $item = $menu->getItem( JRequest::getInt( 'Itemid' ) );
+        }
+        $params = $item->params;
+
         $blogname = $params->get( 'wordbridge_blog_name' );
         if ( empty( $blogname ) || ! function_exists ( 'curl_init' ) )
         {
@@ -60,6 +67,16 @@ class WordbridgeModelCategory extends JModel
         }
 
         $results = WordbridgeHelper::getEntriesFromUrl( $url );
+
+
+        if ( !count( $results ) )
+        {
+            $url = sprintf( 'http://%s/?feed=rss2&category_name=%s-2%s',
+                         WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $pageParam );
+            $isTag = false;
+            $results = WordbridgeHelper::getEntriesFromUrl( $url );
+        }
+
         if ( !$isTag && !count( $results ) && $page <= 1 )
         {
             if ( $blogInfo['uuid'] )
@@ -69,6 +86,15 @@ class WordbridgeModelCategory extends JModel
             $isTag = true;
             $results = WordbridgeHelper::getEntriesFromUrl( $tagUrl );
         }
+        else
+        {
+            // Not a tag
+            if ( $blogInfo['uuid'] )
+            {
+                WordbridgeHelper::addCategory( $blogInfo['uuid'], $category_name );
+            }
+        }
+
         return (object) array( 'isTag' => $isTag,
                                'entries' => $results );
     }

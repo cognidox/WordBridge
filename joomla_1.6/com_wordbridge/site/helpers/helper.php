@@ -187,7 +187,7 @@ class WordbridgeHelper {
     {
         $name = trim ( $name );
         $name = preg_replace( '/[\.\s]/', '-', $name );
-        $name = preg_replace( '/[^\-a-z0-9]/', '', $name );
+        $name = preg_replace( '/[^\-A-Za-z0-9]/', '', $name );
         $name = preg_replace( '/--+/', '-', $name );
         $name = preg_replace( '/^-|_$/', '', $name );
         return $name;
@@ -219,11 +219,13 @@ class WordbridgeHelper {
             $db->query();
             if ( count( $entry['categories'] ) )
             {
+                $i = 0;
                 foreach ( $entry['categories'] as $category )
                 {
-                    $db->setQuery( 
-                        sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %s, %s)', $entry['postid'], $db->quote( $blog_uuid, true ), $db->quote( $category, true ) ) );
+                    $post_category_query =  sprintf( 'INSERT INTO #__com_wordbridge_post_categories VALUES (%d, %s, %d, %s)', $entry['postid'], $db->quote( $blog_uuid, true ), $i, $db->quote( $category, true ) );
+                    $db->setQuery( $post_category_query );
                     $db->query();
+                    $i++;
                 }
             }
         }
@@ -356,12 +358,31 @@ class WordbridgeHelper {
      * addCategory
      * Store something as a category
      */
-    function addCategory( $blog_uuid, $name )
+    public static function addCategory( $blog_uuid, $name )
     {
         $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blog_categories VALUES (%s, %s)', $db->quote( $blog_uuid, true ), $db->quote( $name, true ) );
         $db->setQuery( $query );
         $db->query();
+    }
+
+    /**
+     * isCategory
+     * Determine if something is a Category
+     * @return boolean
+     */
+    public static function isCategory( $blog_uuid, $name )
+    {
+        $db = JFactory::getDBO();
+        $query = sprintf( 'SELECT COUNT(*) FROM #__com_wordbridge_blog_categories WHERE blog_uuid = %s AND category = %s', $db->quote( $blog_uuid, true ), $db->quote( $name, true ) );
+        $db->setQuery( $query );
+        $catCount = $db->loadResult();
+        
+        if ( $catCount )
+        {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -393,12 +414,22 @@ class WordbridgeHelper {
         static $curl_max_loops = 20;
         if ( $curl_loops++ >= $curl_max_loops )
         {
-            return FALSE;
+            return false;
         }
         curl_setopt( $ch, CURLOPT_HEADER, true );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
         $data = curl_exec( $ch );
-        list( $header, $data ) = preg_split( '/(\r?\n){2}/', $data, 2 );
+        // avoid 'Undefined offset 1' error when we only get $header
+        $outputList = preg_split( '/(?:\r?\n){2}/', $data, 2 );
+        if ( count( $outputList ) == 2 )
+        {
+            list( $header, $data ) = $outputList;
+        }
+        else
+        {
+            $header = $outputList[0];
+        }
+
         $http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
         if ( $http_code == 301 || $http_code == 302 )
         {
@@ -433,7 +464,7 @@ class WordbridgeHelper {
      * used in URLs. This will assume things without a '.' are 
      * hosted on wordpress.com, while others are full hostnames
      */
-    function fqdnBlogName( $name )
+    public static function fqdnBlogName( $name )
     {
         $name = trim( $name ) ;
 
