@@ -14,8 +14,9 @@ This repository holds:
 
     joomla_1.5/com_wordbridge - Joomla 1.5 component and plugin sources
     joomla_1.6/com_wordbridge - Joomla 1.6/1.7/2.5 component and plugin sources
+    joomla_3.1/com_wordbridge - Joomla 3.x component and plugin sources
 
-Installation packages for the Joomla components are provided in the Files 
+Installation packages for the Joomla components are provided in the Releases 
 section of the GitHub repository.
 
 More information about installation and usage can be found on the Cognidox
