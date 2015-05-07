@@ -36,9 +36,12 @@ class WordbridgeModelEntry extends JModelLegacy
         $cat_query = sprintf('SELECT DISTINCT category_seq, category from #__com_wordbridge_post_categories WHERE post_id = %d AND blog_uuid = %s', $entry[0], $db->quote($blog_uuid, true));
         $db->setQuery($cat_query);
         $categories = $db->loadRowList();
-        foreach ($categories as $cat)
+        if ($categories)
         {
-            $result['categories'][] = $cat[1];
+            foreach ($categories as $cat)
+            {
+                $result['categories'][] = $cat[1];
+            }
         }
         return $result;
     }
