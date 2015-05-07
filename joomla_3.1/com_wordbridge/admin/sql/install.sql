@@ -47,8 +47,9 @@ CREATE TABLE `#__com_wordbridge_posts` (
 CREATE TABLE `#__com_wordbridge_post_categories` (
     `post_id` INT(11) unsigned NOT NULL,
     `blog_uuid` CHAR(13) NOT NULL DEFAULT '',
+    `category_seq` INT(11) unsigned NOT NULL,
     `category` varchar(200) NOT NULL DEFAULT '',
-    PRIMARY KEY (`post_id`, `blog_uuid`, `category`)
+    PRIMARY KEY (`post_id`, `blog_uuid`, `category_seq`, `category`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#__com_wordbridge_blog_categories` (

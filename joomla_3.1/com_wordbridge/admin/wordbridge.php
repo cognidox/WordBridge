@@ -15,10 +15,10 @@ define('DS',DIRECTORY_SEPARATOR);
 require_once (JPATH_COMPONENT.DS.'controller.php');
 
 // Create the controller
-$controller = new WordbridgeController( );
+$controller = new WordbridgeController();
 
 // Perform the Request task
-$controller->execute( JRequest::getVar( 'task' ) );
+$controller->execute(JRequest::getVar('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

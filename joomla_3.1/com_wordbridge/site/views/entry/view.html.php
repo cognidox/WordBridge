@@ -11,7 +11,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport( 'joomla.application.component.view' );
 if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
-require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
+require_once(JPATH_COMPONENT . DS . 'helpers' . DS . 'helper.php');
  
 /**
  * Wordbridge View
@@ -24,46 +24,46 @@ class WordbridgeViewEntry extends JViewLegacy
      * Wordbridge entry view display method
      * @return void
      **/
-    function display( $tpl = null )
+    function display($tpl = null)
     {
         $app = JFactory::getApplication();
         $menu = $app->getMenu();
         $item = $menu->getActive();
-        if ( !$item )
+        if (!$item)
         {
-            $item = $menu->getItem( JRequest::getInt( 'Itemid' ) );
+            $item = $menu->getItem(JRequest::getInt('Itemid'));
         }
         $params = $item->params;
 
-        $this->assignRef( 'params', $params );
+        $this->assignRef('params', $params);
 
-        $postid = JRequest::getInt( 'p', 0 );
-        $blogInfo = WordbridgeHelper::getBlogByName( $params->get( 'wordbridge_blog_name' ) );
-        $this->assignRef( 'blogTitle', $blogInfo['description'] );
+        $postid = JRequest::getInt('p', 0);
+        $blogInfo = WordbridgeHelper::getBlogByName($params->get('wordbridge_blog_name'));
+        $this->assignRef('blogTitle', $blogInfo['description']);
 
         $model = $this->getModel();
-        $entry = $model->getEntry( $postid, $blogInfo['uuid'] );
+        $entry = $model->getEntry($postid, $blogInfo['uuid']);
 
         $baseUrl = $item->link . '&Itemid=' . $item->id;
-        $this->assignRef( 'blogLink', $baseUrl );
+        $this->assignRef('blogLink', $baseUrl);
 
-        $this->assignRef( 'content', $entry['content'] );
-        $this->assignRef( 'title', $entry['title'] );
-        $this->assignRef( 'slug', $entry['slug'] );
-        $this->assignRef( 'categories', $entry['categories'] );
-        $this->assignRef( 'postid', $entry['postid'] );
-        $this->assignRef( 'date', $entry['date'] );
+        $this->assignRef('content', $entry['content']);
+        $this->assignRef('title', $entry['title']);
+        $this->assignRef('slug', $entry['slug']);
+        $this->assignRef('categories', $entry['categories']);
+        $this->assignRef('postid', $entry['postid']);
+        $this->assignRef('date', $entry['date']);
 
         $document = JFactory::getDocument();
 
         // Set the title to place above the blog
-        $blog_title = $params->get( 'page_title' );
-        if ( !$blog_title )
+        $blog_title = $params->get('page_title');
+        if (!$blog_title)
             $blog_title = $document->getTitle();
-        $this->assignRef( 'blog_title', $blog_title );
+        $this->assignRef('blog_title', $blog_title);
 
         // Set the page title
-        $document->setTitle( $document->getTitle() . ' - ' . $entry['title'] );
+        $document->setTitle($document->getTitle() . ' - ' . $entry['title']);
 
         parent::display($tpl);
     }

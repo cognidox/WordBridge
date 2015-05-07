@@ -7,10 +7,10 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
-jimport( 'joomla.application.component.model' );
-require_once( JPATH_COMPONENT.DS.'helpers'.DS.'helper.php' );
+jimport('joomla.application.component.model');
+require_once(JPATH_COMPONENT . DS . 'helpers' . DS . 'helper.php');
 
 class WordbridgeModelCategory extends JModelLegacy
 {
@@ -20,16 +20,16 @@ class WordbridgeModelCategory extends JModelLegacy
      * Gets the blog posts from wordpress for a specific category, 
      * and stores the blog posts locally
      */
-    function getCategoryPosts( $page, $category_name, $blog_uuid )
+    function getCategoryPosts($page, $category_name, $blog_uuid)
     {
         // Load up the entries
-        $results = $this->_loadEntriesFromWeb( $page, $category_name );
-        WordbridgeHelper::storeBlogEntries( $results->entries, $blog_uuid );
+        $results = $this->_loadEntriesFromWeb($page, $category_name);
+        WordbridgeHelper::storeBlogEntries($results->entries, $blog_uuid);
 
         return $results;
     }
 
-    function _loadEntriesFromWeb( $page = 1, $category_name )
+    function _loadEntriesFromWeb($page = 1, $category_name)
     {
         $app = JFactory::getApplication();
         $params = $app->getParams();
@@ -60,6 +60,14 @@ class WordbridgeModelCategory extends JModelLegacy
         }
 
         $results = WordbridgeHelper::getEntriesFromUrl( $url );
+
+        if ( !count( $results ) )
+        {
+            $url = sprintf( 'http://%s/?feed=rss2&category_name=%s-2%s',
+                         WordbridgeHelper::fqdnBlogName( $blogname ), $ucategory, $pageParam );
+            $isTag = false;
+            $results = WordbridgeHelper::getEntriesFromUrl( $url );
+        }
         if ( !$isTag && !count( $results ) && $page <= 1 )
         {
             if ( $blogInfo['uuid'] )
@@ -69,6 +77,15 @@ class WordbridgeModelCategory extends JModelLegacy
             $isTag = true;
             $results = WordbridgeHelper::getEntriesFromUrl( $tagUrl );
         }
+        else
+        {
+            # Not a tag
+            if ( $blogInfo['uuid'] )
+            {
+                WordbridgeHelper::addCategory( $blogInfo['uuid'], $category_name );
+            }
+        }
+
         return (object) array( 'isTag' => $isTag,
                                'entries' => $results );
     }
