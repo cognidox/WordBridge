@@ -29,9 +29,12 @@ class com_WordbridgeInstallerScript
 
     function update($parent)
     {
+
         $manifest = $parent->get('manifest');
         $parent2 = $parent->getParent();
         $source = $parent2->getPath('source');
+        $lang   = JFactory::getLanguage();
+        $lang->load( $this->component_base.'.sys', $source.DS.'admin', $lang->getDefault(), false, false);
         $this->_installPlugins($manifest, $source, true);
 
         // If a version prior to 0.5 has been installed, the database
@@ -40,7 +43,8 @@ class com_WordbridgeInstallerScript
         $hasUUID = false;
         $db = JFactory::getDbo();
         $blogFields = $db->getTableColumns('#__' . $this->component_base . '_blogs');
-        foreach ($blogFields['#__' . $this->component_base . '_blogs'] as $fieldname => $fieldtype)
+
+        foreach ($blogFields as $fieldname => $fieldtype)
         {
             if ($fieldname == 'blog_uuid')
             {
@@ -67,25 +71,13 @@ class com_WordbridgeInstallerScript
                     }
                 }
             }
-            echo '<p>' . JText::sprintf('COM_WORDBRIDGE_UPDATED_DB') . '123</p>';
+            echo JText::_('COM_WORDBRIDGE_UPDATED_DB');
         }
-        echo '<p>' . JText::sprintf('COM_WORDBRIDGE_UPDATED_TO_VER', htmlspecialchars($manifest->version->data())) . '</p>';
+        echo JText::sprintf('COM_WORDBRIDGE_UPDATED_TO_VER', htmlspecialchars($manifest->version[0]));
     }
 
     function install($parent)
     {
-        // get the running version of Joomla!
-        $jversion = new JVersion();
-        $joomla_version = $jversion->getShortVersion();
-
-        // Hard coded minimum and maximum compatible Joomla! versions
-        $min_joomla_release = "3.0";
-
-        // abort if the current Joomla release is older than the min version
-        if( version_compare( $joomla_version, $min_joomla_release, 'lt')) {
-            Jerror::raiseWarning(null, "This release of WordBridge is for Joomla " . $min_joomla_release . " and later. Your Joomla version is: " . $joomla_version);
-            return false;
-        }
         $manifest = $parent->get('manifest');
         $parent2 = $parent->getParent();
         $source = $parent2->getPath('source');
@@ -148,6 +140,18 @@ class com_WordbridgeInstallerScript
 
     function preflight($type, $parent) 
     {
+        // get the running version of Joomla!
+        $jversion = new JVersion();
+        $joomla_version = $jversion->getShortVersion();
+
+        // Hard coded minimum and maximum compatible Joomla! versions
+        $min_joomla_release = "3.0";
+
+        // abort if the current Joomla release is older than the min version
+        if( version_compare( $joomla_version, $min_joomla_release, 'lt')) {
+            Jerror::raiseWarning(null, "This release of WordBridge is for Joomla " . $min_joomla_release . " and later. Your Joomla version is: " . $joomla_version);
+            return false;
+        }
         $manifest = $parent->get('manifest');
         $parent2 = $parent->getParent();
         $source = $parent2->getPath('source');
