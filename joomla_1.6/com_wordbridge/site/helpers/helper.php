@@ -175,7 +175,7 @@ class WordbridgeHelper {
      * storeBlog
      * Store the ID, name and description of a blog
      */
-    function storeBlog( $id, $uuid, $name, $description, $last_post )
+    public static function storeBlog( $id, $uuid, $name, $description, $last_post )
     {
         $db = JFactory::getDBO();
         $query = sprintf( 'REPLACE INTO #__com_wordbridge_blogs VALUES(%d, %s, %s, %s, %s, NOW())', (int)$id, $db->quote( $uuid, true ), $db->quote( trim( $name ), true ), $db->quote( trim( $description ), true ), $db->quote( $last_post, true ) );
