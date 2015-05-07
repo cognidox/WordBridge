@@ -24,8 +24,10 @@ class WordbridgeModelCategory extends JModelLegacy
     {
         // Load up the entries
         $results = $this->_loadEntriesFromWeb($page, $category_name);
-        WordbridgeHelper::storeBlogEntries($results->entries, $blog_uuid);
-
+        if ($results)
+        {
+            WordbridgeHelper::storeBlogEntries($results->entries, $blog_uuid);
+        }
         return $results;
     }
 
