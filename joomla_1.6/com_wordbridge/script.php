@@ -74,6 +74,19 @@ class com_WordbridgeInstallerScript
 
     function install( $parent )
     {
+        // get the running version of Joomla!
+        $jversion = new JVersion();
+        $joomla_version = $jversion->getShortVersion();
+
+        // Hard coded minimum and maximum compatible Joomla! versions
+        $min_joomla_release = "1.6";
+        $max_joomla_release = "2.5.99";
+
+        // abort if the current Joomla release is not between the min and max versions
+        if( version_compare( $joomla_version, $min_joomla_release, 'lt' ) || version_compare( $joomla_version, $max_joomla_release, 'gt' ) ) {
+            Jerror::raiseWarning(null, "This release of WordBridge is for Joomla " . $min_joomla_release . " to " . $max_joomla_release . ". Your Joomla version is: " . $joomla_version);
+            return false;
+        }
         $manifest = $parent->get( 'manifest' );
         $parent2 = $parent->getParent();
         $source = $parent2->getPath( 'source' );
