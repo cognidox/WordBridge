@@ -19,9 +19,6 @@ This repository holds:
 Installation packages for the Joomla components are provided in the Releases 
 section of the GitHub repository.
 
-More information about installation and usage can be found on the Cognidox
-project page: 
-http://www.cognidox.com/opensource/wordbridge-wordpress-to-joomla-bridge
 
 Installation:
 ------------
@@ -57,7 +54,7 @@ below:
 6) If the blog is self-hosted, install the WordBridge Pro WordPress
    component in WordPress. The WordBridge Pro plugin can be downloaded
    from the project page:
-   http://www.cognidox.com/opensource/wordbridge-wordpress-to-joomla-bridge
+   https://github.com/cognidox/WordBridge/releases/download/release%2F0.6/wordbridge-wordpress-plugin-1.2_rc2.zip
 
 
 Credits
